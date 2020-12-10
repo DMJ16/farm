@@ -31,18 +31,23 @@ const config: HardhatUserConfig = {
     compilers: [
       {
         version: "0.7.5",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
       },
       {
         version: "0.6.12",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
       },
     ],
-    settings: {
-      // https://hardhat.org/hardhat-network/#solidity-optimizer-support
-      optimizer: {
-        enabled: true,
-        runs: 200,
-      },
-    },
   },
   typechain: {
     outDir: "typechain",
