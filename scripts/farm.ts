@@ -51,18 +51,16 @@ express()
   .use(express.static(path.join(__dirname, "public")))
   .set("views", path.join(__dirname, "views"))
   .set("view engine", "ejs")
-  .get("/", (req, res) => res.send("Farm Enter & Exit Bot"))
-
-  .get("/enterFarm", function (req, res) {
+  .get("/", (_, res) => res.send("Farm Enter & Exit Bot"))
+  .get("/enterFarm", function (_, res) {
     //more advanced version would set a high enough gas price, and accept multiple parameters for specifiying specific farms and amounts, as well as have special handlers in the smart contract to handle LP token liquidations
     //replace with your token from Harvest
     // enterFarm(1, "0xa0246c9032bC3A600820415aE600c6388619A14D");
     res.send("exitFarm transaction attempted");
   })
-
-  .get("/exitFarm", function (req, res) {
-    //more advanced version would set a high enough gas price, and accept multiple parameters for specifiying specific farms and amounts, as well as have special handlers in the smart contract to handle LP token liquidations
-    //replace with your token from Harvest
+  .get("/exitFarm", function (_, res) {
+    // more advanced version would set a high enough gas price, and accept multiple parameters for specifiying specific farms and amounts, as well as have special handlers in the smart contract to handle LP token liquidations
+    // replace with your token from Harvest
     // exitFarm(1, "0xa0246c9032bC3A600820415aE600c6388619A14D");
     res.send("exitFarm transaction attempted");
   })

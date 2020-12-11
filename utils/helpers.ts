@@ -14,7 +14,7 @@ import {
   formatEther,
 } from "@ethersproject/units";
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
-import { tokenAddressMap } from "./tokens";
+import { tokenAddressMap, farmAddressMap } from "./addressMaps";
 import { getAddress } from "@ethersproject/address";
 
 export const getWebSocketProvider = (network: string = "homestead") => (
@@ -62,31 +62,16 @@ export const tryCatch = <T>(expression: T): T => {
 };
 
 // DISPLAY LOGIC
-
-export const formatBTCTokens = (token: string) => (
-  amount: BigNumber | string
-): string => {
-  if (!btcAddressMap.has(token))
-    throw new Error("tokenAddress not contained in BTCAddresses Object");
-  return token.toLowerCase() === "sbtc"
-    ? formatEther(amount)
-    : formatUnits(amount, 8);
-};
-
-export const parseBTCTokens = (token: string) => (
-  amount: string
-): BigNumber => {
-  if (!btcAddressMap.has(token))
-    throw new Error("tokenAddress not contained in BTCAddresses Object");
-  return token.toLowerCase() === "sbtc"
-    ? parseEther(amount)
-    : parseUnits(amount, 8);
-};
-
 export const getTokenAddressFromSymbol = (symbol: string): string => {
   const adjSymbol = symbol.toUpperCase();
   if (!tokenAddressMap.has(adjSymbol)) throw new Error("Invalid token symbol");
   return getAddress(tokenAddressMap.get(adjSymbol)!);
+};
+
+export const getFarmAddress = (farm: string): string => {
+  const adjFarm = farm.toUpperCase();
+  if (!farmAddressMap.has(adjFarm)) throw new Error("Invalid farm name");
+  return getAddress(farmAddressMap.get(adjFarm)!);
 };
 
 type TokenData = [

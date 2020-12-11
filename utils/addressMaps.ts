@@ -18,6 +18,14 @@ export const tokenAddressMap: Map<string, string> = new Map<string, string>([
   ["MTA", "0xa3BeD4E1c75D00fa6f4E5E6922DB7261B5E9AcD2"],
   ["FARM", "0xa0246c9032bC3A600820415aE600c6388619A14D"],
   ["BOND", "0x0391D2021f89DC339F60Fff84546EA23E337750f"],
+  ["PICKLE_ETH", "0xdc98556Ce24f007A5eF6dC1CE96322d65832A819"],
+]);
+
+export const farmAddressMap: Map<string, string> = new Map<string, string>([
+  ["ZAP_IN", "0xE83554B397BdA8ECAE7FEE5aeE532e83Ee9eB29D"],
+  ["ZAP_OUT", "0x79B6C6F8634ea477ED725eC23b7b6Fcb41F00E58"],
+  ["ZAP_PIPE", "0xBdcd4Dcc79bA2C4088323ca94F443a05A23cA372"],
+  ["UNI_ROUTER", "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"],
 ]);
 
 export const kovanTokenAddressMap: Map<string, string> = new Map<

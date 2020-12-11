@@ -9,9 +9,8 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       forking: {
-        url: `https://mainnet.infura.io/v3/${
-          process.env.RPC_API_KEY as string
-        }`,
+        url: process.env.ALCHEMY_RPC as string,
+        // blockNumber:
       },
     },
     // ropsten: {
