@@ -74,11 +74,13 @@ contract Farm is ReentrancyGuard, Withdrawable {
   }
 
   modifier validStakingTokenName(string memory _stakingTokenName) {
+    bool isValid = false;
     for (uint256 i = 0; i < nameDirectory.length; i++) {
       if (_stringEqCheck(nameDirectory[i], _stakingTokenName)) {
-        revert("Invalid _stakingTokenName string");
+        isValid = true;
       }
     }
+    if (!isValid) revert("Invalid _stakingTokenName string");
     _;
   }
 
