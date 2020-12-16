@@ -18,6 +18,7 @@ export type { IBalancerZapOut } from "./IBalancerZapOut";
 export type { IUniswapPipe } from "./IUniswapPipe";
 export type { IUniswapZapIn } from "./IUniswapZapIn";
 export type { IUniswapZapOut } from "./IUniswapZapOut";
+export type { Withdrawable } from "./Withdrawable";
 
 export { Ownable__factory } from "./factories/Ownable__factory";
 export { IERC20__factory } from "./factories/IERC20__factory";
@@ -36,3 +37,4 @@ export { IBalancerZapOut__factory } from "./factories/IBalancerZapOut__factory";
 export { IUniswapPipe__factory } from "./factories/IUniswapPipe__factory";
 export { IUniswapZapIn__factory } from "./factories/IUniswapZapIn__factory";
 export { IUniswapZapOut__factory } from "./factories/IUniswapZapOut__factory";
+export { Withdrawable__factory } from "./factories/Withdrawable__factory";

@@ -6,19 +6,20 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "./interfaces/IAutoStake.sol";
-import "./interfaces/IStakingRewards.sol";
-import "./interfaces/IOneSplit.sol";
-import "./interfaces/IVestedLPMining.sol";
+import "./Withdrawable.sol";
+import "./interfaces/IOneSplit.sol"; // 1Inch
+// STAKING CONTRACTS
+import "./interfaces/IAutoStake.sol"; // Harvest
+import "./interfaces/IStakingRewards.sol"; // OLD Pickle
+import "./interfaces/IVestedLPMining.sol"; // PIPT/YETI
+// UNISWAP
 import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 import "@uniswap/lib/contracts/libraries/Babylonian.sol";
 import "./libraries/UniswapV2Library.sol";
 
-contract Farm is ReentrancyGuard, Ownable {
+contract Farm is ReentrancyGuard, Withdrawable {
   using SafeMath for uint256;
   using SafeERC20 for IERC20;
 
@@ -64,13 +65,21 @@ contract Farm is ReentrancyGuard, Ownable {
   IAutoStake public AutoStake =
     IAutoStake(0x25550Cccbd68533Fa04bFD3e3AC4D09f9e00Fc50); // Harvest
 
-  // circuit breaker modifiers
   modifier stopInEmergency {
     if (stopped) {
       revert("Temporarily Paused");
     } else {
       _;
     }
+  }
+
+  modifier validStakingTokenName(string memory _stakingTokenName) {
+    for (uint256 i = 0; i < nameDirectory.length; i++) {
+      if (_stringEqCheck(nameDirectory[i], _stakingTokenName)) {
+        revert("Invalid _stakingTokenName string");
+      }
+    }
+    _;
   }
 
   constructor() payable {
@@ -89,163 +98,175 @@ contract Farm is ReentrancyGuard, Ownable {
       stakingAddress: 0xF09232320eBEAC33fae61b24bB8D7CA192E58507 // pid = 9
     });
 
-    //  NEW ADDRESS STAKING VAULT AFTER YEARN AUDIT IS COMPLETE
+    //  NEW ADDRESS FOR STAKING VAULT AFTER AUDIT IS COMPLETE
     //  stakingDirectory["pickle"] = StakingPlatform({
     //   tokenAddress: 0x429881672B9AE42b8EbA0E26cD9C73711b891Ca5,
-    //   stakingAddress: NEW ADDRESS AFTER YEARN AUDIT
+    //   stakingAddress: ****
     // });
 
-    deadline = block.timestamp + 300;
+    deadline = block.timestamp + 300; // for swaps on Uniswap
   }
 
-  function getStakedBalance(string memory _platform)
+  /**
+   * @dev Get the staked balance of input token name.
+   * @param _stakingTokenName Staking token name.
+   */
+  function getStakedBalance(string memory _stakingTokenName)
     public
+    validStakingTokenName(_stakingTokenName)
     returns (uint256 balance)
   {
-    StakingPlatform memory stakingPlatform = stakingDirectory[_platform];
-    if (_stringEqCheck(_platform, "harvest")) {
-      balance = AutoStake.balanceOf(address(this));
-    } else if (_stringEqCheck(_platform, "pickle")) {
-      uint256 pickleBalance = StakingRewards.balanceOf(address(this));
+    // StakingPlatform memory stakingPlatform = stakingDirectory[_stakingTokenName];
+    address self = address(this);
+    if (_stringEqCheck(_stakingTokenName, "harvest")) {
+      balance = AutoStake.balanceOf(self);
+    } else if (_stringEqCheck(_stakingTokenName, "pickle")) {
+      uint256 pickleBalance = StakingRewards.balanceOf(self);
       balance = pickleBalance;
     } else {
-      if (_stringEqCheck(_platform, "pipt")) {
-        (, , , , uint256 lptAmount) = VestedLPMining.users(6, address(this));
+      if (_stringEqCheck(_stakingTokenName, "pipt")) {
+        (, , , , uint256 lptAmount) = VestedLPMining.users(6, self);
         balance = lptAmount;
       } else {
-        (, , , , uint256 lptAmount) = VestedLPMining.users(9, address(this));
+        (, , , , uint256 lptAmount) = VestedLPMining.users(9, self);
         balance = lptAmount;
       }
     }
     return balance;
   }
 
-  function enterFarm(string memory _platform)
+  /**
+   * @dev Enter staking position given the staking token's name.
+   * @param _stakingTokenName Staking token name.
+   */
+  function enterFarm(string memory _stakingTokenName)
     public
     payable
+    validStakingTokenName(_stakingTokenName)
     onlyOwner
+    stopInEmergency
     returns (uint256 amountStaked)
   {
-    StakingPlatform memory stakingPlatform = stakingDirectory[_platform];
+    StakingPlatform memory stakingPlatform =
+      stakingDirectory[_stakingTokenName];
     IERC20 token = IERC20(stakingPlatform.tokenAddress);
     uint256 ownerBalance = token.balanceOf(msg.sender);
-    token.safeTransferFrom(msg.sender, address(this), ownerBalance);
-    uint256 allowance =
-      token.allowance(address(this), stakingPlatform.stakingAddress);
+    address self = address(this);
+    token.safeTransferFrom(msg.sender, self, ownerBalance);
+    uint256 allowance = token.allowance(self, stakingPlatform.stakingAddress);
     if (allowance < ownerBalance) {
       token.safeDecreaseAllowance(stakingPlatform.stakingAddress, allowance);
       token.safeIncreaseAllowance(stakingPlatform.stakingAddress, ownerBalance);
     }
-    return _stake(_platform, ownerBalance);
+    return _stake(_stakingTokenName, ownerBalance);
   }
 
-  function exitFarm(string memory _platform)
+  /**
+   * @dev Exit staking position and convert staking token to USDC.
+   * @param _stakingTokenName Staking token name.
+   */
+  function exitFarm(string memory _stakingTokenName)
     public
     payable
+    validStakingTokenName(_stakingTokenName)
     onlyOwner
+    stopInEmergency
     returns (bool)
   {
-    StakingPlatform memory stakingPlatform = stakingDirectory[_platform];
-    IERC20 token =
-      IERC20(
-        _stringEqCheck(_platform, "pickle")
-          ? address(wethAddress)
-          : stakingPlatform.tokenAddress
-      );
-    assert(_unstake(_platform));
-    uint256 currentTokenBalance = token.balanceOf(address(this));
-    uint256 allowance = token.allowance(address(this), uniswapRouterAddress);
+    StakingPlatform memory stakingPlatform =
+      stakingDirectory[_stakingTokenName];
+    IERC20 token = IERC20(stakingPlatform.tokenAddress);
+    assert(_unstake(_stakingTokenName));
+    address self = address(this);
+    uint256 currentTokenBalance = token.balanceOf(self);
+    uint256 allowance = token.allowance(self, uniswapRouterAddress);
     if (allowance < currentTokenBalance) {
       token.safeDecreaseAllowance(uniswapRouterAddress, allowance);
       token.safeIncreaseAllowance(uniswapRouterAddress, currentTokenBalance);
     }
-    uint256 swapOutput = _performOneSplit(address(token), currentTokenBalance);
-    uint256 usdcBalance = USDC.balanceOf(address(this));
+    uint256 swapOutput = _performOneSplit(token, currentTokenBalance);
+    uint256 usdcBalance = USDC.balanceOf(self);
     assert(usdcBalance == swapOutput);
     USDC.safeTransfer(msg.sender, usdcBalance);
     return true;
   }
 
-  function harvest(string memory _platform)
+  /**
+   * @dev Harvest the rewards available from staking.
+   * @param _stakingTokenName Staking token name.
+   */
+  function harvest(string memory _stakingTokenName)
     public
+    validStakingTokenName(_stakingTokenName)
+    stopInEmergency
     onlyOwner
     returns (uint256[] memory outputAmounts)
   {
-    StakingPlatform memory stakingPlatform = stakingDirectory[_platform];
-    address tokenAddress;
+    StakingPlatform memory stakingPlatform =
+      stakingDirectory[_stakingTokenName];
     uint256 withdrawAmount;
-    if (_stringEqCheck(_platform, "harvest")) {
-      _unstake(_platform);
-      tokenAddress = farmTokenAddress;
-    } else if (_stringEqCheck(_platform, "pickle")) {
-      withdrawAmount = StakingRewards.rewards(address(this));
-      StakingRewards.getReward(); // TEST THIS WORKS
-      tokenAddress = address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
+    address self = address(this);
+    if (_stringEqCheck(_stakingTokenName, "harvest")) {
+      _unstake(_stakingTokenName); // No harvesting rewards without unstakin
+    } else if (_stringEqCheck(_stakingTokenName, "pickle")) {
+      withdrawAmount = StakingRewards.rewards(self);
+      StakingRewards.getReward();
     } else {
-      if (_stringEqCheck(_platform, "pipt")) {
-        withdrawAmount = VestedLPMining.pendingCvp(6, address(this));
-        tokenAddress = piptAddress;
-      } else {
-        withdrawAmount = VestedLPMining.pendingCvp(9, address(this));
-        tokenAddress = yetiAddress;
-      }
+      if (_stringEqCheck(_stakingTokenName, "pipt"))
+        withdrawAmount = VestedLPMining.pendingCvp(6, self);
+      else withdrawAmount = VestedLPMining.pendingCvp(9, self);
     }
-    IERC20 token = IERC20(tokenAddress);
-    uint256 allowance = token.allowance(address(this), uniswapRouterAddress);
+    IERC20 token = IERC20(stakingPlatform.tokenAddress);
+    uint256 allowance = token.allowance(self, uniswapRouterAddress);
     if (allowance < withdrawAmount) {
       token.safeDecreaseAllowance(uniswapRouterAddress, allowance);
       token.safeIncreaseAllowance(uniswapRouterAddress, withdrawAmount);
     }
-    uint256 swapOutput = _performOneSplit(address(token), withdrawAmount);
+    uint256 swapOutput = _performOneSplit(token, withdrawAmount);
     outputAmounts = new uint256[](2);
     outputAmounts[0] = withdrawAmount;
     outputAmounts[1] = swapOutput;
     return outputAmounts;
   }
 
-  function withdrawTokens(
-    address _tokenAddress,
-    uint256 _amount,
-    address payable _destinationAddress
-  ) public onlyOwner returns (bool) {
-    if (address(_tokenAddress) == address(0)) {
-      _destinationAddress.transfer(_amount);
-    } else {
-      IERC20 token = IERC20(_tokenAddress);
-      token.safeTransfer(_destinationAddress, _amount);
-    }
-    return true;
-  }
-
-  function addFarm(
-    string memory _platform,
-    StakingPlatform calldata _newPlatform
-  ) public onlyOwner returns (bool) {
-    stakingDirectory[_platform] = _newPlatform;
-    StakingPlatform memory newPlatform = stakingDirectory[_platform];
-    assert(newPlatform.tokenAddress == _newPlatform.tokenAddress);
-    assert(newPlatform.stakingAddress == _newPlatform.stakingAddress);
-    return true;
-  }
-
-  function updateStakingToken(string memory _platform, address _newTokenAddress)
-    public
-    onlyOwner
-  {
-    StakingPlatform memory stakingPlatform = stakingDirectory[_platform];
+  /**
+   * @dev Update staking token address for given staking token name.
+   * @param _stakingTokenName Staking token name.
+   * @param _newTokenAddress New token address.
+   */
+  function updateStakingToken(
+    string memory _stakingTokenName,
+    address _newTokenAddress
+  ) public onlyOwner {
+    StakingPlatform memory stakingPlatform =
+      stakingDirectory[_stakingTokenName];
     stakingPlatform.tokenAddress = _newTokenAddress;
-    assert(stakingDirectory[_platform].tokenAddress == _newTokenAddress);
+    assert(
+      stakingDirectory[_stakingTokenName].tokenAddress == _newTokenAddress
+    );
   }
 
+  /**
+   * @dev Update staking contract address for given staking token name.
+   * @param _stakingTokenName Staking token name.
+   * @param _newStakingAddress New staking contract address.
+   */
   function updateStakingAddress(
-    string memory _platform,
+    string memory _stakingTokenName,
     address _newStakingAddress
   ) public onlyOwner {
-    StakingPlatform memory stakingPlatform = stakingDirectory[_platform];
+    StakingPlatform memory stakingPlatform =
+      stakingDirectory[_stakingTokenName];
     stakingPlatform.stakingAddress = _newStakingAddress;
-    assert(stakingDirectory[_platform].stakingAddress == _newStakingAddress);
+    assert(
+      stakingDirectory[_stakingTokenName].stakingAddress == _newStakingAddress
+    );
   }
 
+  /**
+   * @dev Update USDC token address.
+   * @param _newAddress New token address.
+   */
   function updateUSDCToken(address _newAddress)
     public
     onlyOwner
@@ -256,6 +277,10 @@ contract Farm is ReentrancyGuard, Ownable {
     return true;
   }
 
+  /**
+   * @dev Update FARM token address.
+   * @param _newAddress New token address.
+   */
   function updateFARMToken(address _newAddress)
     public
     onlyOwner
@@ -266,6 +291,10 @@ contract Farm is ReentrancyGuard, Ownable {
     return true;
   }
 
+  /**
+   * @dev Update PICKLE token address.
+   * @param _newAddress New token address.
+   */
   function updatePICKLEToken(address _newAddress)
     public
     onlyOwner
@@ -276,18 +305,30 @@ contract Farm is ReentrancyGuard, Ownable {
     return true;
   }
 
+  /**
+   * @dev Update PIPT token address.
+   * @param _newAddress New token address.
+   */
   function updatePIPT(address _newAddress) public onlyOwner returns (bool) {
     piptAddress = _newAddress;
     PIPT = IERC20(_newAddress);
     return true;
   }
 
+  /**
+   * @dev Update YETI token address.
+   * @param _newAddress New token address.
+   */
   function updateYETI(address _newAddress) public onlyOwner returns (bool) {
     yetiAddress = _newAddress;
     YETI = IERC20(_newAddress);
     return true;
   }
 
+  /**
+   * @dev Update Uniswap router contract address.
+   * @param _newAddress New router contract address.
+   */
   function updateUniswapRouter(address _newAddress)
     public
     onlyOwner
@@ -298,35 +339,48 @@ contract Farm is ReentrancyGuard, Ownable {
     return true;
   }
 
-  function kill() public virtual onlyOwner {
+  /**
+   * @dev Self-destructs contract and sends funds to msg.sender, which must be the Owner. Only Owner can call pause().
+   */
+  function kill() public stopInEmergency onlyOwner {
     selfdestruct(msg.sender);
   }
 
+  /**
+   * @dev Pause and unpause contract in case of emergency. Only Owner can call pause().
+   * @notice maybe replace this function with OpenZeppelin's Pausable.
+   */
+
   function pause() public onlyOwner {
-    // maybe replace with _pause() from OpenZeppelin
     stopped = !stopped;
   }
 
-  function _stake(string memory _platform, uint256 _amount)
+  /**
+   * @dev Stake the amount given of staking token's pool.
+   * @param _stakingTokenName Staking token's name
+   * @param _amount Amount to be staked of staking token
+   */
+  function _stake(string memory _stakingTokenName, uint256 _amount)
     internal
     returns (uint256 amountStaked)
   {
-    StakingPlatform memory stakingPlatform = stakingDirectory[_platform];
-    if (_stringEqCheck(_platform, "harvest")) {
+    // StakingPlatform memory stakingPlatform = stakingDirectory[_stakingTokenName];
+    address self = address(this);
+    if (_stringEqCheck(_stakingTokenName, "harvest")) {
       AutoStake.stake(_amount);
-      amountStaked = AutoStake.balanceOf(address(this));
-    } else if (_stringEqCheck(_platform, "pickle")) {
+      amountStaked = AutoStake.balanceOf(self);
+    } else if (_stringEqCheck(_stakingTokenName, "pickle")) {
       StakingRewards.stake(_amount);
-      uint256 pickleBalance = StakingRewards.balanceOf(address(this));
+      uint256 pickleBalance = StakingRewards.balanceOf(self);
       amountStaked = pickleBalance;
     } else {
-      if (_stringEqCheck(_platform, "pipt")) {
+      if (_stringEqCheck(_stakingTokenName, "pipt")) {
         VestedLPMining.deposit(6, _amount);
-        (, , , , uint256 lptAmount) = VestedLPMining.users(6, address(this));
+        (, , , , uint256 lptAmount) = VestedLPMining.users(6, self);
         amountStaked = lptAmount;
       } else {
         VestedLPMining.deposit(9, _amount);
-        (, , , , uint256 lptAmount) = VestedLPMining.users(9, address(this));
+        (, , , , uint256 lptAmount) = VestedLPMining.users(9, self);
         amountStaked = lptAmount;
       }
     }
@@ -334,53 +388,52 @@ contract Farm is ReentrancyGuard, Ownable {
     return amountStaked;
   }
 
-  function _unstake(string memory _platform) internal returns (bool) {
-    StakingPlatform memory stakingPlatform = stakingDirectory[_platform];
-    if (_stringEqCheck(_platform, "harvest")) {
+  /**
+   * @dev Unstake total amount of staked tokens.
+   * @param _stakingTokenName Staking token's name
+   */
+  function _unstake(string memory _stakingTokenName) internal returns (bool) {
+    StakingPlatform memory stakingPlatform =
+      stakingDirectory[_stakingTokenName];
+    address self = address(this);
+    if (_stringEqCheck(_stakingTokenName, "harvest")) {
       AutoStake.exit();
-      assert(AutoStake.balanceOf(address(this)) == 0);
-    } else if (_stringEqCheck(_platform, "pickle")) {
-      uint256 pickleBalance = StakingRewards.balanceOf(address(this));
+      assert(AutoStake.balanceOf(self) == 0);
+    } else if (_stringEqCheck(_stakingTokenName, "pickle")) {
+      uint256 pickleBalance = StakingRewards.balanceOf(self);
       StakingRewards.withdraw(pickleBalance);
-      assert(StakingRewards.balanceOf(address(this)) == 0);
+      assert(StakingRewards.balanceOf(self) == 0);
     } else {
-      if (_stringEqCheck(_platform, "pipt")) {
-        (, , , , uint256 lptAmount) = VestedLPMining.users(6, address(this));
-        VestedLPMining.deposit(6, lptAmount);
-        (, , , , uint256 postDepositLptAmount) =
-          VestedLPMining.users(6, address(this));
-        assert(postDepositLptAmount == 0);
+      if (_stringEqCheck(_stakingTokenName, "pipt")) {
+        (, , , , uint256 lptAmount) = VestedLPMining.users(6, self);
+        VestedLPMining.withdraw(6, lptAmount);
+        (, , , , uint256 postWithdrawLptAmount) = VestedLPMining.users(6, self);
+        assert(postWithdrawLptAmount == 0);
       } else {
-        (, , , , uint256 lptAmount) = VestedLPMining.users(9, address(this));
-        VestedLPMining.deposit(9, lptAmount);
-        (, , , , uint256 postDepositLptAmount) =
-          VestedLPMining.users(9, address(this));
-        assert(postDepositLptAmount == 0);
+        (, , , , uint256 lptAmount) = VestedLPMining.users(9, self);
+        VestedLPMining.withdraw(9, lptAmount);
+        (, , , , uint256 postWithdrawLptAmount) = VestedLPMining.users(9, self);
+        assert(postWithdrawLptAmount == 0);
       }
     }
     return true;
   }
 
-  function _performOneSplit(address _tokenAddress, uint256 _withdrawAmount)
+  /**
+   * @dev Swap token into USDC using 1Inch.
+   * @param _token ERC20 token to swap into USDC
+   * @param _amount Amount of ERC20 token to convert into USDC
+   */
+  function _performOneSplit(IERC20 _token, uint256 _amount)
     internal
     returns (uint256 swapOutput)
   {
     (uint256 returnAmount, uint256[] memory distribution) =
-      OneSplit.getExpectedReturn(
-        _tokenAddress == wethAddress
-          ? IERC20(address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE))
-          : IERC20(_tokenAddress),
-        USDC,
-        _withdrawAmount,
-        100,
-        0
-      );
+      OneSplit.getExpectedReturn(_token, USDC, _amount, 100, 0);
     swapOutput = OneSplit.swap(
-      _tokenAddress == wethAddress
-        ? IERC20(address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE))
-        : IERC20(_tokenAddress),
+      _token,
       USDC,
-      _withdrawAmount,
+      _amount,
       returnAmount,
       distribution,
       0
@@ -388,6 +441,11 @@ contract Farm is ReentrancyGuard, Ownable {
     return swapOutput;
   }
 
+  /**
+   * @dev Helper to check if two strings are equal.
+   * @param str1 First string to compare
+   * @param str2 Second string to compare
+   */
   function _stringEqCheck(string memory str1, string memory str2)
     internal
     pure
