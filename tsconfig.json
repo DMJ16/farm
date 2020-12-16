@@ -15,6 +15,7 @@
   "exclude": ["node_modules"],
   "include": [
     "scripts/**/*",
+    "src/**/*",
     "tasks/**/*",
     "test/**/*",
     "typechain/**/*",

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.8.0;
 
-interface IUniswapV2ZapIn {
+interface IUniswapZapIn {
   // zapIn address: 0xE83554B397BdA8ECAE7FEE5aeE532e83Ee9eB29D
 
   function ZapIn(
@@ -19,7 +19,7 @@ interface IUniswapV2ZapIn {
     returns (uint256);
 }
 
-interface IUniswapV2ZapOut {
+interface IUniswapZapOut {
   // zapOut: 0x79B6C6F8634ea477ED725eC23b7b6Fcb41F00E58
   function ZapOut2PairToken(address _FromUniPoolAddress, uint256 _IncomingLP)
     external
@@ -33,7 +33,16 @@ interface IUniswapV2ZapOut {
   ) external payable returns (uint256);
 }
 
-interface IUniswapV2Pipe {
+interface IBalancerZapOut {
+  function EasyZapOut(
+    address _ToTokenContractAddress,
+    address _FromBalancerPoolAddress,
+    uint256 _IncomingBPT,
+    uint256 _minTokensRec
+  ) external payable returns (uint256);
+}
+
+interface IUniswapPipe {
   // zapPipe address: 0xBdcd4Dcc79bA2C4088323ca94F443a05A23cA372
 
   function PipeUniV2(

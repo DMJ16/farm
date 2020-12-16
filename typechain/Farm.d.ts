@@ -23,114 +23,168 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface FarmInterface extends ethers.utils.Interface {
   functions: {
-    "ZAPIN()": FunctionFragment;
-    "ZAPOUT()": FunctionFragment;
-    "addFarm(address,address)": FunctionFragment;
-    "enterFarm(uint256,address)": FunctionFragment;
-    "exitFarm(uint256,address)": FunctionFragment;
-    "farmDirectory(uint256,address)": FunctionFragment;
-    "getStakedBalance(uint256,address,address)": FunctionFragment;
-    "harvestPicklesConvertToEth()": FunctionFragment;
+    "AutoStake()": FunctionFragment;
+    "FARM()": FunctionFragment;
+    "OneSplit()": FunctionFragment;
+    "PICKLE()": FunctionFragment;
+    "PIPT()": FunctionFragment;
+    "StakingRewards()": FunctionFragment;
+    "USDC()": FunctionFragment;
+    "UniFactory()": FunctionFragment;
+    "UniswapRouter()": FunctionFragment;
+    "VestedLPMining()": FunctionFragment;
+    "YETI()": FunctionFragment;
+    "addFarm(string,tuple)": FunctionFragment;
+    "autoStakeAddress()": FunctionFragment;
+    "enterFarm(string)": FunctionFragment;
+    "exitFarm(string)": FunctionFragment;
+    "farmTokenAddress()": FunctionFragment;
+    "getStakedBalance(string)": FunctionFragment;
+    "harvest(string)": FunctionFragment;
     "kill()": FunctionFragment;
+    "nameDirectory(uint256)": FunctionFragment;
+    "onesplitAddress()": FunctionFragment;
     "owner()": FunctionFragment;
-    "pickle()": FunctionFragment;
-    "pickleSellQty()": FunctionFragment;
-    "rebalance()": FunctionFragment;
+    "pause()": FunctionFragment;
+    "pickleAddress()": FunctionFragment;
+    "piptAddress()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "tokenDirectory(uint256)": FunctionFragment;
+    "stakingDirectory(string)": FunctionFragment;
+    "stakingRewardsAddress()": FunctionFragment;
+    "stopped()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "uniAddress()": FunctionFragment;
-    "updatePickleAddress(address)": FunctionFragment;
-    "updatePickleSellQty(uint256)": FunctionFragment;
+    "uniFactoryAddress()": FunctionFragment;
+    "uniswapRouterAddress()": FunctionFragment;
+    "updateFARMToken(address)": FunctionFragment;
+    "updatePICKLEToken(address)": FunctionFragment;
+    "updatePIPT(address)": FunctionFragment;
+    "updateStakingAddress(string,address)": FunctionFragment;
+    "updateStakingToken(string,address)": FunctionFragment;
     "updateUSDCToken(address)": FunctionFragment;
-    "updateUniswap(address)": FunctionFragment;
-    "updatefarmContract(uint256,address,address)": FunctionFragment;
-    "usdc()": FunctionFragment;
+    "updateUniswapRouter(address)": FunctionFragment;
+    "updateYETI(address)": FunctionFragment;
     "usdcAddress()": FunctionFragment;
-    "weth()": FunctionFragment;
     "wethAddress()": FunctionFragment;
     "withdrawTokens(address,uint256,address)": FunctionFragment;
-    "zapIn(address,address,address,address,uint256,uint256)": FunctionFragment;
-    "zapOutEthPair(address,address,uint256,uint256)": FunctionFragment;
-    "zapOutTokenPair(address,uint256)": FunctionFragment;
+    "yetiAddress()": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "ZAPIN", values?: undefined): string;
-  encodeFunctionData(functionFragment: "ZAPOUT", values?: undefined): string;
+  encodeFunctionData(functionFragment: "AutoStake", values?: undefined): string;
+  encodeFunctionData(functionFragment: "FARM", values?: undefined): string;
+  encodeFunctionData(functionFragment: "OneSplit", values?: undefined): string;
+  encodeFunctionData(functionFragment: "PICKLE", values?: undefined): string;
+  encodeFunctionData(functionFragment: "PIPT", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "StakingRewards",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "USDC", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "UniFactory",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "UniswapRouter",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "VestedLPMining",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "YETI", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "addFarm",
-    values: [string, string]
+    values: [string, { tokenAddress: string; stakingAddress: string }]
   ): string;
   encodeFunctionData(
-    functionFragment: "enterFarm",
-    values: [BigNumberish, string]
+    functionFragment: "autoStakeAddress",
+    values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "enterFarm", values: [string]): string;
+  encodeFunctionData(functionFragment: "exitFarm", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "exitFarm",
-    values: [BigNumberish, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "farmDirectory",
-    values: [BigNumberish, string]
+    functionFragment: "farmTokenAddress",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getStakedBalance",
-    values: [BigNumberish, string, string]
+    values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "harvestPicklesConvertToEth",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "harvest", values: [string]): string;
   encodeFunctionData(functionFragment: "kill", values?: undefined): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(functionFragment: "pickle", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "pickleSellQty",
+    functionFragment: "nameDirectory",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "onesplitAddress",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "rebalance", values?: undefined): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "pickleAddress",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "piptAddress",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "tokenDirectory",
-    values: [BigNumberish]
+    functionFragment: "stakingDirectory",
+    values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "stakingRewardsAddress",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "stopped", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "uniAddress",
+    functionFragment: "uniFactoryAddress",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "updatePickleAddress",
+    functionFragment: "uniswapRouterAddress",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateFARMToken",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "updatePickleSellQty",
-    values: [BigNumberish]
+    functionFragment: "updatePICKLEToken",
+    values: [string]
+  ): string;
+  encodeFunctionData(functionFragment: "updatePIPT", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "updateStakingAddress",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateStakingToken",
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "updateUSDCToken",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "updateUniswap",
+    functionFragment: "updateUniswapRouter",
     values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "updatefarmContract",
-    values: [BigNumberish, string, string]
-  ): string;
-  encodeFunctionData(functionFragment: "usdc", values?: undefined): string;
+  encodeFunctionData(functionFragment: "updateYETI", values: [string]): string;
   encodeFunctionData(
     functionFragment: "usdcAddress",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "weth", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "wethAddress",
     values?: undefined
@@ -140,62 +194,105 @@ interface FarmInterface extends ethers.utils.Interface {
     values: [string, BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "zapIn",
-    values: [string, string, string, string, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "zapOutEthPair",
-    values: [string, string, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "zapOutTokenPair",
-    values: [string, BigNumberish]
+    functionFragment: "yetiAddress",
+    values?: undefined
   ): string;
 
-  decodeFunctionResult(functionFragment: "ZAPIN", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "ZAPOUT", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "AutoStake", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "FARM", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "OneSplit", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "PICKLE", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "PIPT", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "StakingRewards",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "USDC", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "UniFactory", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "UniswapRouter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "VestedLPMining",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "YETI", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "addFarm", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "autoStakeAddress",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "enterFarm", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "exitFarm", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "farmDirectory",
+    functionFragment: "farmTokenAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "getStakedBalance",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "harvestPicklesConvertToEth",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "harvest", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "kill", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "pickle", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "pickleSellQty",
+    functionFragment: "nameDirectory",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "rebalance", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "onesplitAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "pickleAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "piptAddress",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "tokenDirectory",
+    functionFragment: "stakingDirectory",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "stakingRewardsAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "stopped", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "uniAddress", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "updatePickleAddress",
+    functionFragment: "uniFactoryAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "updatePickleSellQty",
+    functionFragment: "uniswapRouterAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateFARMToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updatePICKLEToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "updatePIPT", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "updateStakingAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateStakingToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -203,19 +300,14 @@ interface FarmInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "updateUniswap",
+    functionFragment: "updateUniswapRouter",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "updatefarmContract",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "usdc", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "updateYETI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "usdcAddress",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "weth", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "wethAddress",
     data: BytesLike
@@ -224,13 +316,8 @@ interface FarmInterface extends ethers.utils.Interface {
     functionFragment: "withdrawTokens",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "zapIn", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "zapOutEthPair",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "zapOutTokenPair",
+    functionFragment: "yetiAddress",
     data: BytesLike
   ): Result;
 
@@ -255,111 +342,243 @@ export class Farm extends Contract {
   interface: FarmInterface;
 
   functions: {
-    ZAPIN(
+    AutoStake(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "ZAPIN()"(
+    "AutoStake()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    ZAPOUT(
+    FARM(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "ZAPOUT()"(
+    "FARM()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    OneSplit(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "OneSplit()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    PICKLE(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "PICKLE()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    PIPT(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "PIPT()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    StakingRewards(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "StakingRewards()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    USDC(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "USDC()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    UniFactory(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "UniFactory()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    UniswapRouter(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "UniswapRouter()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    VestedLPMining(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "VestedLPMining()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    YETI(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "YETI()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
     addFarm(
-      _lpTokenAddress: string,
-      _farmAddress: string,
+      _platform: string,
+      _newPlatform: { tokenAddress: string; stakingAddress: string },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "addFarm(address,address)"(
-      _lpTokenAddress: string,
-      _farmAddress: string,
+    "addFarm(string,tuple)"(
+      _platform: string,
+      _newPlatform: { tokenAddress: string; stakingAddress: string },
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    enterFarm(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    "enterFarm(uint256,address)"(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    exitFarm(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    "exitFarm(uint256,address)"(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    farmDirectory(
-      arg0: BigNumberish,
-      arg1: string,
+    autoStakeAddress(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "farmDirectory(uint256,address)"(
-      arg0: BigNumberish,
-      arg1: string,
+    "autoStakeAddress()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    enterFarm(
+      _platform: string,
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
+    "enterFarm(string)"(
+      _platform: string,
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
+    exitFarm(
+      _platform: string,
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
+    "exitFarm(string)"(
+      _platform: string,
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
+    farmTokenAddress(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "farmTokenAddress()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
     getStakedBalance(
-      _farmId: BigNumberish,
-      _owner: string,
-      _lpTokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "getStakedBalance(uint256,address,address)"(
-      _farmId: BigNumberish,
-      _owner: string,
-      _lpTokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    harvestPicklesConvertToEth(
+      _platform: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "harvestPicklesConvertToEth()"(
+    "getStakedBalance(string)"(
+      _platform: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    harvest(
+      _platform: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "harvest(string)"(
+      _platform: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     kill(overrides?: Overrides): Promise<ContractTransaction>;
 
     "kill()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    nameDirectory(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "nameDirectory(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    onesplitAddress(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "onesplitAddress()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
     owner(
       overrides?: CallOverrides
@@ -373,37 +592,29 @@ export class Farm extends Contract {
       0: string;
     }>;
 
-    pickle(
+    pause(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "pause()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    pickleAddress(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "pickle()"(
+    "pickleAddress()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    pickleSellQty(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    "pickleSellQty()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: BigNumber;
-    }>;
-
-    rebalance(
+    piptAddress(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "rebalance()"(
+    "piptAddress()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -413,18 +624,48 @@ export class Farm extends Contract {
 
     "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-    tokenDirectory(
-      arg0: BigNumberish,
+    stakingDirectory(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAddress: string;
+      stakingAddress: string;
+      0: string;
+      1: string;
+    }>;
+
+    "stakingDirectory(string)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      tokenAddress: string;
+      stakingAddress: string;
+      0: string;
+      1: string;
+    }>;
+
+    stakingRewardsAddress(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "tokenDirectory(uint256)"(
-      arg0: BigNumberish,
+    "stakingRewardsAddress()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
+    }>;
+
+    stopped(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "stopped()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
     }>;
 
     transferOwnership(
@@ -437,35 +678,81 @@ export class Farm extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    uniAddress(
+    uniFactoryAddress(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "uniAddress()"(
+    "uniFactoryAddress()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    updatePickleAddress(
-      _newPickleAddress: string,
+    uniswapRouterAddress(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "uniswapRouterAddress()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    updateFARMToken(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "updatePickleAddress(address)"(
-      _newPickleAddress: string,
+    "updateFARMToken(address)"(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    updatePickleSellQty(
-      _newQty: BigNumberish,
+    updatePICKLEToken(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "updatePickleSellQty(uint256)"(
-      _newQty: BigNumberish,
+    "updatePICKLEToken(address)"(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    updatePIPT(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "updatePIPT(address)"(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    updateStakingAddress(
+      _platform: string,
+      _newStakingAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "updateStakingAddress(string,address)"(
+      _platform: string,
+      _newStakingAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    updateStakingToken(
+      _platform: string,
+      _newTokenAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "updateStakingToken(string,address)"(
+      _platform: string,
+      _newTokenAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -479,41 +766,25 @@ export class Farm extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    updateUniswap(
+    updateUniswapRouter(
       _newAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "updateUniswap(address)"(
+    "updateUniswapRouter(address)"(
       _newAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    updatefarmContract(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      _newFarmAddress: string,
+    updateYETI(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "updatefarmContract(uint256,address,address)"(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      _newFarmAddress: string,
+    "updateYETI(address)"(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    usdc(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "usdc()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
 
     usdcAddress(
       overrides?: CallOverrides
@@ -522,18 +793,6 @@ export class Farm extends Contract {
     }>;
 
     "usdcAddress()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    weth(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "weth()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -552,143 +811,133 @@ export class Farm extends Contract {
     }>;
 
     withdrawTokens(
-      _token: string,
+      _tokenAddress: string,
       _amount: BigNumberish,
-      _destination: string,
+      _destinationAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "withdrawTokens(address,uint256,address)"(
-      _token: string,
+      _tokenAddress: string,
       _amount: BigNumberish,
-      _destination: string,
+      _destinationAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    zapIn(
-      _toWhomToIssue: string,
-      _FromTokenContractAddress: string,
-      _ToUnipoolToken0: string,
-      _ToUnipoolToken1: string,
-      _amount: BigNumberish,
-      _minPoolTokens: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
+    yetiAddress(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
 
-    "zapIn(address,address,address,address,uint256,uint256)"(
-      _toWhomToIssue: string,
-      _FromTokenContractAddress: string,
-      _ToUnipoolToken0: string,
-      _ToUnipoolToken1: string,
-      _amount: BigNumberish,
-      _minPoolTokens: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    zapOutEthPair(
-      _ToTokenContractAddress: string,
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      _minTokensRecs: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    "zapOutEthPair(address,address,uint256,uint256)"(
-      _ToTokenContractAddress: string,
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      _minTokensRecs: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    zapOutTokenPair(
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    "zapOutTokenPair(address,uint256)"(
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
+    "yetiAddress()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
   };
 
-  ZAPIN(overrides?: CallOverrides): Promise<string>;
+  AutoStake(overrides?: CallOverrides): Promise<string>;
 
-  "ZAPIN()"(overrides?: CallOverrides): Promise<string>;
+  "AutoStake()"(overrides?: CallOverrides): Promise<string>;
 
-  ZAPOUT(overrides?: CallOverrides): Promise<string>;
+  FARM(overrides?: CallOverrides): Promise<string>;
 
-  "ZAPOUT()"(overrides?: CallOverrides): Promise<string>;
+  "FARM()"(overrides?: CallOverrides): Promise<string>;
+
+  OneSplit(overrides?: CallOverrides): Promise<string>;
+
+  "OneSplit()"(overrides?: CallOverrides): Promise<string>;
+
+  PICKLE(overrides?: CallOverrides): Promise<string>;
+
+  "PICKLE()"(overrides?: CallOverrides): Promise<string>;
+
+  PIPT(overrides?: CallOverrides): Promise<string>;
+
+  "PIPT()"(overrides?: CallOverrides): Promise<string>;
+
+  StakingRewards(overrides?: CallOverrides): Promise<string>;
+
+  "StakingRewards()"(overrides?: CallOverrides): Promise<string>;
+
+  USDC(overrides?: CallOverrides): Promise<string>;
+
+  "USDC()"(overrides?: CallOverrides): Promise<string>;
+
+  UniFactory(overrides?: CallOverrides): Promise<string>;
+
+  "UniFactory()"(overrides?: CallOverrides): Promise<string>;
+
+  UniswapRouter(overrides?: CallOverrides): Promise<string>;
+
+  "UniswapRouter()"(overrides?: CallOverrides): Promise<string>;
+
+  VestedLPMining(overrides?: CallOverrides): Promise<string>;
+
+  "VestedLPMining()"(overrides?: CallOverrides): Promise<string>;
+
+  YETI(overrides?: CallOverrides): Promise<string>;
+
+  "YETI()"(overrides?: CallOverrides): Promise<string>;
 
   addFarm(
-    _lpTokenAddress: string,
-    _farmAddress: string,
+    _platform: string,
+    _newPlatform: { tokenAddress: string; stakingAddress: string },
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "addFarm(address,address)"(
-    _lpTokenAddress: string,
-    _farmAddress: string,
+  "addFarm(string,tuple)"(
+    _platform: string,
+    _newPlatform: { tokenAddress: string; stakingAddress: string },
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  autoStakeAddress(overrides?: CallOverrides): Promise<string>;
+
+  "autoStakeAddress()"(overrides?: CallOverrides): Promise<string>;
 
   enterFarm(
-    _farmId: BigNumberish,
-    _lpTokenAddress: string,
+    _platform: string,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  "enterFarm(uint256,address)"(
-    _farmId: BigNumberish,
-    _lpTokenAddress: string,
+  "enterFarm(string)"(
+    _platform: string,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   exitFarm(
-    _farmId: BigNumberish,
-    _lpTokenAddress: string,
+    _platform: string,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  "exitFarm(uint256,address)"(
-    _farmId: BigNumberish,
-    _lpTokenAddress: string,
+  "exitFarm(string)"(
+    _platform: string,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  farmDirectory(
-    arg0: BigNumberish,
-    arg1: string,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  farmTokenAddress(overrides?: CallOverrides): Promise<string>;
 
-  "farmDirectory(uint256,address)"(
-    arg0: BigNumberish,
-    arg1: string,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  "farmTokenAddress()"(overrides?: CallOverrides): Promise<string>;
 
   getStakedBalance(
-    _farmId: BigNumberish,
-    _owner: string,
-    _lpTokenAddress: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "getStakedBalance(uint256,address,address)"(
-    _farmId: BigNumberish,
-    _owner: string,
-    _lpTokenAddress: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  harvestPicklesConvertToEth(
+    _platform: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "harvestPicklesConvertToEth()"(
+  "getStakedBalance(string)"(
+    _platform: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  harvest(
+    _platform: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "harvest(string)"(
+    _platform: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -696,35 +945,64 @@ export class Farm extends Contract {
 
   "kill()"(overrides?: Overrides): Promise<ContractTransaction>;
 
+  nameDirectory(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  "nameDirectory(uint256)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  onesplitAddress(overrides?: CallOverrides): Promise<string>;
+
+  "onesplitAddress()"(overrides?: CallOverrides): Promise<string>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   "owner()"(overrides?: CallOverrides): Promise<string>;
 
-  pickle(overrides?: CallOverrides): Promise<string>;
+  pause(overrides?: Overrides): Promise<ContractTransaction>;
 
-  "pickle()"(overrides?: CallOverrides): Promise<string>;
+  "pause()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-  pickleSellQty(overrides?: CallOverrides): Promise<BigNumber>;
+  pickleAddress(overrides?: CallOverrides): Promise<string>;
 
-  "pickleSellQty()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "pickleAddress()"(overrides?: CallOverrides): Promise<string>;
 
-  rebalance(overrides?: CallOverrides): Promise<string>;
+  piptAddress(overrides?: CallOverrides): Promise<string>;
 
-  "rebalance()"(overrides?: CallOverrides): Promise<string>;
+  "piptAddress()"(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
 
   "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-  tokenDirectory(
-    arg0: BigNumberish,
+  stakingDirectory(
+    arg0: string,
     overrides?: CallOverrides
-  ): Promise<string>;
+  ): Promise<{
+    tokenAddress: string;
+    stakingAddress: string;
+    0: string;
+    1: string;
+  }>;
 
-  "tokenDirectory(uint256)"(
-    arg0: BigNumberish,
+  "stakingDirectory(string)"(
+    arg0: string,
     overrides?: CallOverrides
-  ): Promise<string>;
+  ): Promise<{
+    tokenAddress: string;
+    stakingAddress: string;
+    0: string;
+    1: string;
+  }>;
+
+  stakingRewardsAddress(overrides?: CallOverrides): Promise<string>;
+
+  "stakingRewardsAddress()"(overrides?: CallOverrides): Promise<string>;
+
+  stopped(overrides?: CallOverrides): Promise<boolean>;
+
+  "stopped()"(overrides?: CallOverrides): Promise<boolean>;
 
   transferOwnership(
     newOwner: string,
@@ -736,27 +1014,65 @@ export class Farm extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  uniAddress(overrides?: CallOverrides): Promise<string>;
+  uniFactoryAddress(overrides?: CallOverrides): Promise<string>;
 
-  "uniAddress()"(overrides?: CallOverrides): Promise<string>;
+  "uniFactoryAddress()"(overrides?: CallOverrides): Promise<string>;
 
-  updatePickleAddress(
-    _newPickleAddress: string,
+  uniswapRouterAddress(overrides?: CallOverrides): Promise<string>;
+
+  "uniswapRouterAddress()"(overrides?: CallOverrides): Promise<string>;
+
+  updateFARMToken(
+    _newAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "updatePickleAddress(address)"(
-    _newPickleAddress: string,
+  "updateFARMToken(address)"(
+    _newAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  updatePickleSellQty(
-    _newQty: BigNumberish,
+  updatePICKLEToken(
+    _newAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "updatePickleSellQty(uint256)"(
-    _newQty: BigNumberish,
+  "updatePICKLEToken(address)"(
+    _newAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  updatePIPT(
+    _newAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "updatePIPT(address)"(
+    _newAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  updateStakingAddress(
+    _platform: string,
+    _newStakingAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "updateStakingAddress(string,address)"(
+    _platform: string,
+    _newStakingAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  updateStakingToken(
+    _platform: string,
+    _newTokenAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "updateStakingToken(string,address)"(
+    _platform: string,
+    _newTokenAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -770,218 +1086,213 @@ export class Farm extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  updateUniswap(
+  updateUniswapRouter(
     _newAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "updateUniswap(address)"(
+  "updateUniswapRouter(address)"(
     _newAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  updatefarmContract(
-    _farmId: BigNumberish,
-    _lpTokenAddress: string,
-    _newFarmAddress: string,
+  updateYETI(
+    _newAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "updatefarmContract(uint256,address,address)"(
-    _farmId: BigNumberish,
-    _lpTokenAddress: string,
-    _newFarmAddress: string,
+  "updateYETI(address)"(
+    _newAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
-
-  usdc(overrides?: CallOverrides): Promise<string>;
-
-  "usdc()"(overrides?: CallOverrides): Promise<string>;
 
   usdcAddress(overrides?: CallOverrides): Promise<string>;
 
   "usdcAddress()"(overrides?: CallOverrides): Promise<string>;
-
-  weth(overrides?: CallOverrides): Promise<string>;
-
-  "weth()"(overrides?: CallOverrides): Promise<string>;
 
   wethAddress(overrides?: CallOverrides): Promise<string>;
 
   "wethAddress()"(overrides?: CallOverrides): Promise<string>;
 
   withdrawTokens(
-    _token: string,
+    _tokenAddress: string,
     _amount: BigNumberish,
-    _destination: string,
+    _destinationAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "withdrawTokens(address,uint256,address)"(
-    _token: string,
+    _tokenAddress: string,
     _amount: BigNumberish,
-    _destination: string,
+    _destinationAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  zapIn(
-    _toWhomToIssue: string,
-    _FromTokenContractAddress: string,
-    _ToUnipoolToken0: string,
-    _ToUnipoolToken1: string,
-    _amount: BigNumberish,
-    _minPoolTokens: BigNumberish,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
+  yetiAddress(overrides?: CallOverrides): Promise<string>;
 
-  "zapIn(address,address,address,address,uint256,uint256)"(
-    _toWhomToIssue: string,
-    _FromTokenContractAddress: string,
-    _ToUnipoolToken0: string,
-    _ToUnipoolToken1: string,
-    _amount: BigNumberish,
-    _minPoolTokens: BigNumberish,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  zapOutEthPair(
-    _ToTokenContractAddress: string,
-    _FromUniPoolAddress: string,
-    _IncomingLP: BigNumberish,
-    _minTokensRecs: BigNumberish,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  "zapOutEthPair(address,address,uint256,uint256)"(
-    _ToTokenContractAddress: string,
-    _FromUniPoolAddress: string,
-    _IncomingLP: BigNumberish,
-    _minTokensRecs: BigNumberish,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  zapOutTokenPair(
-    _FromUniPoolAddress: string,
-    _IncomingLP: BigNumberish,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  "zapOutTokenPair(address,uint256)"(
-    _FromUniPoolAddress: string,
-    _IncomingLP: BigNumberish,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
+  "yetiAddress()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    ZAPIN(overrides?: CallOverrides): Promise<string>;
+    AutoStake(overrides?: CallOverrides): Promise<string>;
 
-    "ZAPIN()"(overrides?: CallOverrides): Promise<string>;
+    "AutoStake()"(overrides?: CallOverrides): Promise<string>;
 
-    ZAPOUT(overrides?: CallOverrides): Promise<string>;
+    FARM(overrides?: CallOverrides): Promise<string>;
 
-    "ZAPOUT()"(overrides?: CallOverrides): Promise<string>;
+    "FARM()"(overrides?: CallOverrides): Promise<string>;
+
+    OneSplit(overrides?: CallOverrides): Promise<string>;
+
+    "OneSplit()"(overrides?: CallOverrides): Promise<string>;
+
+    PICKLE(overrides?: CallOverrides): Promise<string>;
+
+    "PICKLE()"(overrides?: CallOverrides): Promise<string>;
+
+    PIPT(overrides?: CallOverrides): Promise<string>;
+
+    "PIPT()"(overrides?: CallOverrides): Promise<string>;
+
+    StakingRewards(overrides?: CallOverrides): Promise<string>;
+
+    "StakingRewards()"(overrides?: CallOverrides): Promise<string>;
+
+    USDC(overrides?: CallOverrides): Promise<string>;
+
+    "USDC()"(overrides?: CallOverrides): Promise<string>;
+
+    UniFactory(overrides?: CallOverrides): Promise<string>;
+
+    "UniFactory()"(overrides?: CallOverrides): Promise<string>;
+
+    UniswapRouter(overrides?: CallOverrides): Promise<string>;
+
+    "UniswapRouter()"(overrides?: CallOverrides): Promise<string>;
+
+    VestedLPMining(overrides?: CallOverrides): Promise<string>;
+
+    "VestedLPMining()"(overrides?: CallOverrides): Promise<string>;
+
+    YETI(overrides?: CallOverrides): Promise<string>;
+
+    "YETI()"(overrides?: CallOverrides): Promise<string>;
 
     addFarm(
-      _lpTokenAddress: string,
-      _farmAddress: string,
+      _platform: string,
+      _newPlatform: { tokenAddress: string; stakingAddress: string },
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "addFarm(string,tuple)"(
+      _platform: string,
+      _newPlatform: { tokenAddress: string; stakingAddress: string },
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    autoStakeAddress(overrides?: CallOverrides): Promise<string>;
+
+    "autoStakeAddress()"(overrides?: CallOverrides): Promise<string>;
+
+    enterFarm(_platform: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "enterFarm(string)"(
+      _platform: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "addFarm(address,address)"(
-      _lpTokenAddress: string,
-      _farmAddress: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    exitFarm(_platform: string, overrides?: CallOverrides): Promise<boolean>;
 
-    enterFarm(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
+    "exitFarm(string)"(
+      _platform: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "enterFarm(uint256,address)"(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    farmTokenAddress(overrides?: CallOverrides): Promise<string>;
 
-    exitFarm(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "exitFarm(uint256,address)"(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    farmDirectory(
-      arg0: BigNumberish,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "farmDirectory(uint256,address)"(
-      arg0: BigNumberish,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    "farmTokenAddress()"(overrides?: CallOverrides): Promise<string>;
 
     getStakedBalance(
-      _farmId: BigNumberish,
-      _owner: string,
-      _lpTokenAddress: string,
+      _platform: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "getStakedBalance(uint256,address,address)"(
-      _farmId: BigNumberish,
-      _owner: string,
-      _lpTokenAddress: string,
+    "getStakedBalance(string)"(
+      _platform: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    harvestPicklesConvertToEth(overrides?: CallOverrides): Promise<BigNumber>;
+    harvest(_platform: string, overrides?: CallOverrides): Promise<BigNumber[]>;
 
-    "harvestPicklesConvertToEth()"(
+    "harvest(string)"(
+      _platform: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<BigNumber[]>;
 
     kill(overrides?: CallOverrides): Promise<void>;
 
     "kill()"(overrides?: CallOverrides): Promise<void>;
 
+    nameDirectory(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "nameDirectory(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    onesplitAddress(overrides?: CallOverrides): Promise<string>;
+
+    "onesplitAddress()"(overrides?: CallOverrides): Promise<string>;
+
     owner(overrides?: CallOverrides): Promise<string>;
 
     "owner()"(overrides?: CallOverrides): Promise<string>;
 
-    pickle(overrides?: CallOverrides): Promise<string>;
+    pause(overrides?: CallOverrides): Promise<void>;
 
-    "pickle()"(overrides?: CallOverrides): Promise<string>;
+    "pause()"(overrides?: CallOverrides): Promise<void>;
 
-    pickleSellQty(overrides?: CallOverrides): Promise<BigNumber>;
+    pickleAddress(overrides?: CallOverrides): Promise<string>;
 
-    "pickleSellQty()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "pickleAddress()"(overrides?: CallOverrides): Promise<string>;
 
-    rebalance(overrides?: CallOverrides): Promise<string>;
+    piptAddress(overrides?: CallOverrides): Promise<string>;
 
-    "rebalance()"(overrides?: CallOverrides): Promise<string>;
+    "piptAddress()"(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
 
-    tokenDirectory(
-      arg0: BigNumberish,
+    stakingDirectory(
+      arg0: string,
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<{
+      tokenAddress: string;
+      stakingAddress: string;
+      0: string;
+      1: string;
+    }>;
 
-    "tokenDirectory(uint256)"(
-      arg0: BigNumberish,
+    "stakingDirectory(string)"(
+      arg0: string,
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<{
+      tokenAddress: string;
+      stakingAddress: string;
+      0: string;
+      1: string;
+    }>;
+
+    stakingRewardsAddress(overrides?: CallOverrides): Promise<string>;
+
+    "stakingRewardsAddress()"(overrides?: CallOverrides): Promise<string>;
+
+    stopped(overrides?: CallOverrides): Promise<boolean>;
+
+    "stopped()"(overrides?: CallOverrides): Promise<boolean>;
 
     transferOwnership(
       newOwner: string,
@@ -993,29 +1304,67 @@ export class Farm extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    uniAddress(overrides?: CallOverrides): Promise<string>;
+    uniFactoryAddress(overrides?: CallOverrides): Promise<string>;
 
-    "uniAddress()"(overrides?: CallOverrides): Promise<string>;
+    "uniFactoryAddress()"(overrides?: CallOverrides): Promise<string>;
 
-    updatePickleAddress(
-      _newPickleAddress: string,
+    uniswapRouterAddress(overrides?: CallOverrides): Promise<string>;
+
+    "uniswapRouterAddress()"(overrides?: CallOverrides): Promise<string>;
+
+    updateFARMToken(
+      _newAddress: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "updatePickleAddress(address)"(
-      _newPickleAddress: string,
+    "updateFARMToken(address)"(
+      _newAddress: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    updatePickleSellQty(
-      _newQty: BigNumberish,
+    updatePICKLEToken(
+      _newAddress: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "updatePickleSellQty(uint256)"(
-      _newQty: BigNumberish,
+    "updatePICKLEToken(address)"(
+      _newAddress: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    updatePIPT(
+      _newAddress: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "updatePIPT(address)"(
+      _newAddress: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    updateStakingAddress(
+      _platform: string,
+      _newStakingAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "updateStakingAddress(string,address)"(
+      _platform: string,
+      _newStakingAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateStakingToken(
+      _platform: string,
+      _newTokenAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "updateStakingToken(string,address)"(
+      _platform: string,
+      _newTokenAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     updateUSDCToken(
       _newAddress: string,
@@ -1027,117 +1376,51 @@ export class Farm extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    updateUniswap(
+    updateUniswapRouter(
       _newAddress: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "updateUniswap(address)"(
+    "updateUniswapRouter(address)"(
       _newAddress: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    updatefarmContract(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      _newFarmAddress: string,
+    updateYETI(
+      _newAddress: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    "updatefarmContract(uint256,address,address)"(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      _newFarmAddress: string,
+    "updateYETI(address)"(
+      _newAddress: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    usdc(overrides?: CallOverrides): Promise<string>;
-
-    "usdc()"(overrides?: CallOverrides): Promise<string>;
 
     usdcAddress(overrides?: CallOverrides): Promise<string>;
 
     "usdcAddress()"(overrides?: CallOverrides): Promise<string>;
-
-    weth(overrides?: CallOverrides): Promise<string>;
-
-    "weth()"(overrides?: CallOverrides): Promise<string>;
 
     wethAddress(overrides?: CallOverrides): Promise<string>;
 
     "wethAddress()"(overrides?: CallOverrides): Promise<string>;
 
     withdrawTokens(
-      _token: string,
+      _tokenAddress: string,
       _amount: BigNumberish,
-      _destination: string,
+      _destinationAddress: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     "withdrawTokens(address,uint256,address)"(
-      _token: string,
+      _tokenAddress: string,
       _amount: BigNumberish,
-      _destination: string,
+      _destinationAddress: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    zapIn(
-      _toWhomToIssue: string,
-      _FromTokenContractAddress: string,
-      _ToUnipoolToken0: string,
-      _ToUnipoolToken1: string,
-      _amount: BigNumberish,
-      _minPoolTokens: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    yetiAddress(overrides?: CallOverrides): Promise<string>;
 
-    "zapIn(address,address,address,address,uint256,uint256)"(
-      _toWhomToIssue: string,
-      _FromTokenContractAddress: string,
-      _ToUnipoolToken0: string,
-      _ToUnipoolToken1: string,
-      _amount: BigNumberish,
-      _minPoolTokens: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    zapOutEthPair(
-      _ToTokenContractAddress: string,
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      _minTokensRecs: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "zapOutEthPair(address,address,uint256,uint256)"(
-      _ToTokenContractAddress: string,
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      _minTokensRecs: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    zapOutTokenPair(
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      amountA: BigNumber;
-      amountB: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-    }>;
-
-    "zapOutTokenPair(address,uint256)"(
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      amountA: BigNumber;
-      amountB: BigNumber;
-      0: BigNumber;
-      1: BigNumber;
-    }>;
+    "yetiAddress()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -1148,113 +1431,162 @@ export class Farm extends Contract {
   };
 
   estimateGas: {
-    ZAPIN(overrides?: CallOverrides): Promise<BigNumber>;
+    AutoStake(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "ZAPIN()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "AutoStake()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    ZAPOUT(overrides?: CallOverrides): Promise<BigNumber>;
+    FARM(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "ZAPOUT()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "FARM()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    OneSplit(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "OneSplit()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    PICKLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "PICKLE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    PIPT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "PIPT()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    StakingRewards(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "StakingRewards()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    USDC(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "USDC()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    UniFactory(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "UniFactory()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    UniswapRouter(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "UniswapRouter()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    VestedLPMining(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "VestedLPMining()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    YETI(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "YETI()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     addFarm(
-      _lpTokenAddress: string,
-      _farmAddress: string,
+      _platform: string,
+      _newPlatform: { tokenAddress: string; stakingAddress: string },
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "addFarm(address,address)"(
-      _lpTokenAddress: string,
-      _farmAddress: string,
+    "addFarm(string,tuple)"(
+      _platform: string,
+      _newPlatform: { tokenAddress: string; stakingAddress: string },
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    autoStakeAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "autoStakeAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     enterFarm(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
+      _platform: string,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    "enterFarm(uint256,address)"(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
+    "enterFarm(string)"(
+      _platform: string,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     exitFarm(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
+      _platform: string,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    "exitFarm(uint256,address)"(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
+    "exitFarm(string)"(
+      _platform: string,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    farmDirectory(
-      arg0: BigNumberish,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    farmTokenAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "farmDirectory(uint256,address)"(
-      arg0: BigNumberish,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    "farmTokenAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getStakedBalance(
-      _farmId: BigNumberish,
-      _owner: string,
-      _lpTokenAddress: string,
-      overrides?: CallOverrides
+      _platform: string,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "getStakedBalance(uint256,address,address)"(
-      _farmId: BigNumberish,
-      _owner: string,
-      _lpTokenAddress: string,
-      overrides?: CallOverrides
+    "getStakedBalance(string)"(
+      _platform: string,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
-    harvestPicklesConvertToEth(overrides?: Overrides): Promise<BigNumber>;
+    harvest(_platform: string, overrides?: Overrides): Promise<BigNumber>;
 
-    "harvestPicklesConvertToEth()"(overrides?: Overrides): Promise<BigNumber>;
+    "harvest(string)"(
+      _platform: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
     kill(overrides?: Overrides): Promise<BigNumber>;
 
     "kill()"(overrides?: Overrides): Promise<BigNumber>;
 
+    nameDirectory(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "nameDirectory(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    onesplitAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "onesplitAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    pickle(overrides?: CallOverrides): Promise<BigNumber>;
+    pause(overrides?: Overrides): Promise<BigNumber>;
 
-    "pickle()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "pause()"(overrides?: Overrides): Promise<BigNumber>;
 
-    pickleSellQty(overrides?: CallOverrides): Promise<BigNumber>;
+    pickleAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "pickleSellQty()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "pickleAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    rebalance(overrides?: CallOverrides): Promise<BigNumber>;
+    piptAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "rebalance()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "piptAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(overrides?: Overrides): Promise<BigNumber>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
 
-    tokenDirectory(
-      arg0: BigNumberish,
+    stakingDirectory(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "tokenDirectory(uint256)"(
-      arg0: BigNumberish,
+    "stakingDirectory(string)"(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    stakingRewardsAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "stakingRewardsAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    stopped(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "stopped()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: string,
@@ -1266,27 +1598,62 @@ export class Farm extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    uniAddress(overrides?: CallOverrides): Promise<BigNumber>;
+    uniFactoryAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "uniAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "uniFactoryAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    updatePickleAddress(
-      _newPickleAddress: string,
+    uniswapRouterAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "uniswapRouterAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    updateFARMToken(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "updatePickleAddress(address)"(
-      _newPickleAddress: string,
+    "updateFARMToken(address)"(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    updatePickleSellQty(
-      _newQty: BigNumberish,
+    updatePICKLEToken(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "updatePickleSellQty(uint256)"(
-      _newQty: BigNumberish,
+    "updatePICKLEToken(address)"(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    updatePIPT(_newAddress: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "updatePIPT(address)"(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    updateStakingAddress(
+      _platform: string,
+      _newStakingAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "updateStakingAddress(string,address)"(
+      _platform: string,
+      _newStakingAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    updateStakingToken(
+      _platform: string,
+      _newTokenAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "updateStakingToken(string,address)"(
+      _platform: string,
+      _newTokenAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1300,185 +1667,160 @@ export class Farm extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    updateUniswap(
+    updateUniswapRouter(
       _newAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "updateUniswap(address)"(
+    "updateUniswapRouter(address)"(
       _newAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    updatefarmContract(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      _newFarmAddress: string,
+    updateYETI(_newAddress: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "updateYETI(address)"(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
-
-    "updatefarmContract(uint256,address,address)"(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      _newFarmAddress: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    usdc(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "usdc()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     usdcAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     "usdcAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    weth(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "weth()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     wethAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     "wethAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     withdrawTokens(
-      _token: string,
+      _tokenAddress: string,
       _amount: BigNumberish,
-      _destination: string,
+      _destinationAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "withdrawTokens(address,uint256,address)"(
-      _token: string,
+      _tokenAddress: string,
       _amount: BigNumberish,
-      _destination: string,
+      _destinationAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    zapIn(
-      _toWhomToIssue: string,
-      _FromTokenContractAddress: string,
-      _ToUnipoolToken0: string,
-      _ToUnipoolToken1: string,
-      _amount: BigNumberish,
-      _minPoolTokens: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
+    yetiAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "zapIn(address,address,address,address,uint256,uint256)"(
-      _toWhomToIssue: string,
-      _FromTokenContractAddress: string,
-      _ToUnipoolToken0: string,
-      _ToUnipoolToken1: string,
-      _amount: BigNumberish,
-      _minPoolTokens: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    zapOutEthPair(
-      _ToTokenContractAddress: string,
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      _minTokensRecs: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    "zapOutEthPair(address,address,uint256,uint256)"(
-      _ToTokenContractAddress: string,
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      _minTokensRecs: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    zapOutTokenPair(
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    "zapOutTokenPair(address,uint256)"(
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
+    "yetiAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    ZAPIN(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    AutoStake(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "ZAPIN()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "AutoStake()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    ZAPOUT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    FARM(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "ZAPOUT()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "FARM()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    OneSplit(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "OneSplit()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    PICKLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "PICKLE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    PIPT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "PIPT()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    StakingRewards(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "StakingRewards()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    USDC(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "USDC()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    UniFactory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "UniFactory()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    UniswapRouter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "UniswapRouter()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    VestedLPMining(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "VestedLPMining()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    YETI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "YETI()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     addFarm(
-      _lpTokenAddress: string,
-      _farmAddress: string,
+      _platform: string,
+      _newPlatform: { tokenAddress: string; stakingAddress: string },
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "addFarm(address,address)"(
-      _lpTokenAddress: string,
-      _farmAddress: string,
+    "addFarm(string,tuple)"(
+      _platform: string,
+      _newPlatform: { tokenAddress: string; stakingAddress: string },
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    autoStakeAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "autoStakeAddress()"(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     enterFarm(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
+      _platform: string,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    "enterFarm(uint256,address)"(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
+    "enterFarm(string)"(
+      _platform: string,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     exitFarm(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
+      _platform: string,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    "exitFarm(uint256,address)"(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
+    "exitFarm(string)"(
+      _platform: string,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    farmDirectory(
-      arg0: BigNumberish,
-      arg1: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    farmTokenAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "farmDirectory(uint256,address)"(
-      arg0: BigNumberish,
-      arg1: string,
+    "farmTokenAddress()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getStakedBalance(
-      _farmId: BigNumberish,
-      _owner: string,
-      _lpTokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getStakedBalance(uint256,address,address)"(
-      _farmId: BigNumberish,
-      _owner: string,
-      _lpTokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    harvestPicklesConvertToEth(
+      _platform: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "harvestPicklesConvertToEth()"(
+    "getStakedBalance(string)"(
+      _platform: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    harvest(
+      _platform: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "harvest(string)"(
+      _platform: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1486,35 +1828,63 @@ export class Farm extends Contract {
 
     "kill()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
+    nameDirectory(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "nameDirectory(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    onesplitAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "onesplitAddress()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    pickle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    pause(overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    "pickle()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "pause()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    pickleSellQty(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    pickleAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "pickleSellQty()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "pickleAddress()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    rebalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    piptAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "rebalance()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "piptAddress()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    tokenDirectory(
-      arg0: BigNumberish,
+    stakingDirectory(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "tokenDirectory(uint256)"(
-      arg0: BigNumberish,
+    "stakingDirectory(string)"(
+      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    stakingRewardsAddress(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "stakingRewardsAddress()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    stopped(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "stopped()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: string,
@@ -1526,27 +1896,71 @@ export class Farm extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    uniAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    uniFactoryAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "uniAddress()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "uniFactoryAddress()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    updatePickleAddress(
-      _newPickleAddress: string,
+    uniswapRouterAddress(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "uniswapRouterAddress()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    updateFARMToken(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "updatePickleAddress(address)"(
-      _newPickleAddress: string,
+    "updateFARMToken(address)"(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    updatePickleSellQty(
-      _newQty: BigNumberish,
+    updatePICKLEToken(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "updatePickleSellQty(uint256)"(
-      _newQty: BigNumberish,
+    "updatePICKLEToken(address)"(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    updatePIPT(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "updatePIPT(address)"(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    updateStakingAddress(
+      _platform: string,
+      _newStakingAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "updateStakingAddress(string,address)"(
+      _platform: string,
+      _newStakingAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    updateStakingToken(
+      _platform: string,
+      _newTokenAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "updateStakingToken(string,address)"(
+      _platform: string,
+      _newTokenAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1560,106 +1974,50 @@ export class Farm extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    updateUniswap(
+    updateUniswapRouter(
       _newAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "updateUniswap(address)"(
+    "updateUniswapRouter(address)"(
       _newAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    updatefarmContract(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      _newFarmAddress: string,
+    updateYETI(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "updatefarmContract(uint256,address,address)"(
-      _farmId: BigNumberish,
-      _lpTokenAddress: string,
-      _newFarmAddress: string,
+    "updateYETI(address)"(
+      _newAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
-
-    usdc(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "usdc()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     usdcAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "usdcAddress()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    weth(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "weth()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     wethAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "wethAddress()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     withdrawTokens(
-      _token: string,
+      _tokenAddress: string,
       _amount: BigNumberish,
-      _destination: string,
+      _destinationAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "withdrawTokens(address,uint256,address)"(
-      _token: string,
+      _tokenAddress: string,
       _amount: BigNumberish,
-      _destination: string,
+      _destinationAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    zapIn(
-      _toWhomToIssue: string,
-      _FromTokenContractAddress: string,
-      _ToUnipoolToken0: string,
-      _ToUnipoolToken1: string,
-      _amount: BigNumberish,
-      _minPoolTokens: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
+    yetiAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "zapIn(address,address,address,address,uint256,uint256)"(
-      _toWhomToIssue: string,
-      _FromTokenContractAddress: string,
-      _ToUnipoolToken0: string,
-      _ToUnipoolToken1: string,
-      _amount: BigNumberish,
-      _minPoolTokens: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    zapOutEthPair(
-      _ToTokenContractAddress: string,
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      _minTokensRecs: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "zapOutEthPair(address,address,uint256,uint256)"(
-      _ToTokenContractAddress: string,
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      _minTokensRecs: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    zapOutTokenPair(
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "zapOutTokenPair(address,uint256)"(
-      _FromUniPoolAddress: string,
-      _IncomingLP: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
+    "yetiAddress()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
