@@ -14,7 +14,7 @@
 
 - The decision to exclude LP token staking was made so that the bot can more easily determine when to exit and enter staking positions. LP token staking would require monitoring impermanent loss--potentially an upgrade for the future.
 
-- Big thank you to OrFeed/Proof's YouTube channel where I got the yield farming stop-loss idea. They generously provide barebone examples for the discussed projects on their Github. [Proof YouTube Channel](https://www.youtube.com/channel/UCKDNphVF9TItP7PP9wJPM6g).
+- Big thank you to OrFeed/Proof's YouTube channel where I got the yield farming stop-loss idea. They generously provide examples for the discussed projects on their Github. [Proof YouTube Channel](https://www.youtube.com/channel/UCKDNphVF9TItP7PP9wJPM6g).
 
 ## Assets
 
