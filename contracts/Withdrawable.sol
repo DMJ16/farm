@@ -3,12 +3,13 @@ pragma solidity >=0.4.22 <0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /**
     Ensures that any contract that inherits from this contract is able to
     withdraw funds that are accidentally received or stuck.
  */
-contract Withdrawable is Ownable {
+contract Withdrawable is Ownable, ReentrancyGuard {
   using SafeERC20 for IERC20;
   address constant ETHER = address(0);
 
@@ -22,7 +23,7 @@ contract Withdrawable is Ownable {
    * @dev Withdraw single token.
    * @param _tokenAddress Address of token to be withdrawn.
    */
-  function withdrawToken(address _tokenAddress) public onlyOwner {
+  function withdrawToken(address _tokenAddress) public onlyOwner nonReentrant {
     uint256 tokenBalance;
     address self = address(this);
     if (_tokenAddress == ETHER) {
@@ -46,7 +47,7 @@ contract Withdrawable is Ownable {
     address _tokenAddress,
     uint256 _amount,
     address payable _destinationAddress
-  ) public onlyOwner {
+  ) public onlyOwner nonReentrant {
     IERC20 token = IERC20(_tokenAddress);
     address self = address(this);
     require(
@@ -65,6 +66,7 @@ contract Withdrawable is Ownable {
   function batchWithdrawToken(address[] memory _tokenAddresses)
     public
     onlyOwner
+    nonReentrant
   {
     for (uint256 i = 0; i < _tokenAddresses.length; i++) {
       withdrawToken(_tokenAddresses[i]);

@@ -6,6 +6,8 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
+import "@openzeppelin/contracts/utils/EnumerableSet.sol";
 import "./Withdrawable.sol";
 import "./interfaces/IOneSplit.sol"; // 1Inch
 // STAKING CONTRACTS
@@ -19,9 +21,10 @@ import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 import "@uniswap/lib/contracts/libraries/Babylonian.sol";
 import "./libraries/UniswapV2Library.sol";
 
-contract Farm is ReentrancyGuard, Withdrawable {
+contract Farm is ReentrancyGuard, Pausable, Withdrawable {
   using SafeMath for uint256;
   using SafeERC20 for IERC20;
+  using EnumerableSet for EnumerableSet.Bytes32Set;
 
   struct StakingPlatform {
     address tokenAddress;
@@ -29,7 +32,7 @@ contract Farm is ReentrancyGuard, Withdrawable {
   }
 
   mapping(string => StakingPlatform) public stakingDirectory;
-  string[] public nameDirectory = ["harvest", "pickle", "pipt", "yeti"];
+  EnumerableSet.Bytes32Set private nameDirectory;
   bool public stopped = false;
   uint256 deadline;
 
@@ -65,26 +68,20 @@ contract Farm is ReentrancyGuard, Withdrawable {
   IAutoStake public AutoStake =
     IAutoStake(0x25550Cccbd68533Fa04bFD3e3AC4D09f9e00Fc50); // Harvest
 
-  modifier stopInEmergency {
-    if (stopped) {
-      revert("Temporarily Paused");
-    } else {
-      _;
-    }
-  }
-
-  modifier validStakingTokenName(string memory _stakingTokenName) {
-    bool isValid = false;
-    for (uint256 i = 0; i < nameDirectory.length; i++) {
-      if (_stringEqCheck(nameDirectory[i], _stakingTokenName)) {
-        isValid = true;
-      }
-    }
-    if (!isValid) revert("Invalid _stakingTokenName string");
+  modifier isValidTokenName(string memory _stakingTokenName) {
+    require(
+      nameDirectory.contains(keccak256(abi.encodePacked(_stakingTokenName))),
+      "Invalid _stakingTokenName"
+    );
     _;
   }
 
   constructor() payable {
+    nameDirectory.add(keccak256(abi.encodePacked("harvest")));
+    nameDirectory.add(keccak256(abi.encodePacked("pickle")));
+    nameDirectory.add(keccak256(abi.encodePacked("pipt")));
+    nameDirectory.add(keccak256(abi.encodePacked("yeti")));
+
     stakingDirectory["harvest"] = StakingPlatform({
       tokenAddress: 0xa0246c9032bC3A600820415aE600c6388619A14D,
       stakingAddress: 0x25550Cccbd68533Fa04bFD3e3AC4D09f9e00Fc50
@@ -115,7 +112,9 @@ contract Farm is ReentrancyGuard, Withdrawable {
    */
   function getStakedBalance(string memory _stakingTokenName)
     public
-    validStakingTokenName(_stakingTokenName)
+    view
+    onlyOwner
+    isValidTokenName(_stakingTokenName)
     returns (uint256 balance)
   {
     // StakingPlatform memory stakingPlatform = stakingDirectory[_stakingTokenName];
@@ -144,9 +143,10 @@ contract Farm is ReentrancyGuard, Withdrawable {
   function enterFarm(string memory _stakingTokenName)
     public
     payable
-    validStakingTokenName(_stakingTokenName)
     onlyOwner
-    stopInEmergency
+    nonReentrant
+    whenNotPaused
+    isValidTokenName(_stakingTokenName)
     returns (uint256 amountStaked)
   {
     StakingPlatform memory stakingPlatform =
@@ -170,9 +170,10 @@ contract Farm is ReentrancyGuard, Withdrawable {
   function exitFarm(string memory _stakingTokenName)
     public
     payable
-    validStakingTokenName(_stakingTokenName)
     onlyOwner
-    stopInEmergency
+    nonReentrant
+    whenNotPaused
+    isValidTokenName(_stakingTokenName)
     returns (bool)
   {
     StakingPlatform memory stakingPlatform =
@@ -199,9 +200,10 @@ contract Farm is ReentrancyGuard, Withdrawable {
    */
   function harvest(string memory _stakingTokenName)
     public
-    validStakingTokenName(_stakingTokenName)
-    stopInEmergency
     onlyOwner
+    nonReentrant
+    whenNotPaused
+    isValidTokenName(_stakingTokenName)
     returns (uint256[] memory outputAmounts)
   {
     StakingPlatform memory stakingPlatform =
@@ -342,19 +344,26 @@ contract Farm is ReentrancyGuard, Withdrawable {
   }
 
   /**
-   * @dev Self-destructs contract and sends funds to msg.sender, which must be the Owner. Only Owner can call pause().
+   * @dev Self-destructs contract and sends funds to msg.sender, which must be the Owner. Only Owner can call kill()
    */
-  function kill() public stopInEmergency onlyOwner {
+  function kill() public onlyOwner {
     selfdestruct(msg.sender);
   }
 
   /**
-   * @dev Pause and unpause contract in case of emergency. Only Owner can call pause().
-   * @notice maybe replace this function with OpenZeppelin's Pausable.
+   * @dev Pause contract in case of emergency. Only Owner can call pause().
    */
+  function pause() public onlyOwner returns (bool) {
+    _pause();
+    return paused();
+  }
 
-  function pause() public onlyOwner {
-    stopped = !stopped;
+  /**
+   * @dev Unpause contract. Only Owner can call unpause().
+   */
+  function unpause() public onlyOwner returns (bool) {
+    _unpause();
+    return paused();
   }
 
   /**

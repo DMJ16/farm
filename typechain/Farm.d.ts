@@ -42,10 +42,10 @@ interface FarmInterface extends ethers.utils.Interface {
     "getStakedBalance(string)": FunctionFragment;
     "harvest(string)": FunctionFragment;
     "kill()": FunctionFragment;
-    "nameDirectory(uint256)": FunctionFragment;
     "onesplitAddress()": FunctionFragment;
     "owner()": FunctionFragment;
     "pause()": FunctionFragment;
+    "paused()": FunctionFragment;
     "pickleAddress()": FunctionFragment;
     "piptAddress()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -55,6 +55,7 @@ interface FarmInterface extends ethers.utils.Interface {
     "transferOwnership(address)": FunctionFragment;
     "uniFactoryAddress()": FunctionFragment;
     "uniswapRouterAddress()": FunctionFragment;
+    "unpause()": FunctionFragment;
     "updateFARMToken(address)": FunctionFragment;
     "updatePICKLEToken(address)": FunctionFragment;
     "updatePIPT(address)": FunctionFragment;
@@ -114,15 +115,12 @@ interface FarmInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "harvest", values: [string]): string;
   encodeFunctionData(functionFragment: "kill", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "nameDirectory",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "onesplitAddress",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "pickleAddress",
     values?: undefined
@@ -156,6 +154,7 @@ interface FarmInterface extends ethers.utils.Interface {
     functionFragment: "uniswapRouterAddress",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "updateFARMToken",
     values: [string]
@@ -244,15 +243,12 @@ interface FarmInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "harvest", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "kill", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "nameDirectory",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "onesplitAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "pickleAddress",
     data: BytesLike
@@ -286,6 +282,7 @@ interface FarmInterface extends ethers.utils.Interface {
     functionFragment: "uniswapRouterAddress",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "updateFARMToken",
     data: BytesLike
@@ -336,10 +333,14 @@ interface FarmInterface extends ethers.utils.Interface {
   events: {
     "LogWithdraw(address,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "Paused(address)": EventFragment;
+    "Unpaused(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "LogWithdraw"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
 
 export class Farm extends Contract {
@@ -544,13 +545,19 @@ export class Farm extends Contract {
 
     getStakedBalance(
       _stakingTokenName: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<{
+      balance: BigNumber;
+      0: BigNumber;
+    }>;
 
     "getStakedBalance(string)"(
       _stakingTokenName: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<{
+      balance: BigNumber;
+      0: BigNumber;
+    }>;
 
     harvest(
       _stakingTokenName: string,
@@ -565,20 +572,6 @@ export class Farm extends Contract {
     kill(overrides?: Overrides): Promise<ContractTransaction>;
 
     "kill()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-    nameDirectory(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "nameDirectory(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
 
     onesplitAddress(
       overrides?: CallOverrides
@@ -607,6 +600,18 @@ export class Farm extends Contract {
     pause(overrides?: Overrides): Promise<ContractTransaction>;
 
     "pause()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    paused(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
+
+    "paused()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: boolean;
+    }>;
 
     pickleAddress(
       overrides?: CallOverrides
@@ -713,6 +718,10 @@ export class Farm extends Contract {
     ): Promise<{
       0: string;
     }>;
+
+    unpause(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "unpause()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     updateFARMToken(
       _newAddress: string,
@@ -943,13 +952,13 @@ export class Farm extends Contract {
 
   getStakedBalance(
     _stakingTokenName: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   "getStakedBalance(string)"(
     _stakingTokenName: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   harvest(
     _stakingTokenName: string,
@@ -965,13 +974,6 @@ export class Farm extends Contract {
 
   "kill()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-  nameDirectory(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  "nameDirectory(uint256)"(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
   onesplitAddress(overrides?: CallOverrides): Promise<string>;
 
   "onesplitAddress()"(overrides?: CallOverrides): Promise<string>;
@@ -983,6 +985,10 @@ export class Farm extends Contract {
   pause(overrides?: Overrides): Promise<ContractTransaction>;
 
   "pause()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+  paused(overrides?: CallOverrides): Promise<boolean>;
+
+  "paused()"(overrides?: CallOverrides): Promise<boolean>;
 
   pickleAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -1041,6 +1047,10 @@ export class Farm extends Contract {
   uniswapRouterAddress(overrides?: CallOverrides): Promise<string>;
 
   "uniswapRouterAddress()"(overrides?: CallOverrides): Promise<string>;
+
+  unpause(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "unpause()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   updateFARMToken(
     _newAddress: string,
@@ -1269,16 +1279,6 @@ export class Farm extends Contract {
 
     "kill()"(overrides?: CallOverrides): Promise<void>;
 
-    nameDirectory(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    "nameDirectory(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     onesplitAddress(overrides?: CallOverrides): Promise<string>;
 
     "onesplitAddress()"(overrides?: CallOverrides): Promise<string>;
@@ -1287,9 +1287,13 @@ export class Farm extends Contract {
 
     "owner()"(overrides?: CallOverrides): Promise<string>;
 
-    pause(overrides?: CallOverrides): Promise<void>;
+    pause(overrides?: CallOverrides): Promise<boolean>;
 
-    "pause()"(overrides?: CallOverrides): Promise<void>;
+    "pause()"(overrides?: CallOverrides): Promise<boolean>;
+
+    paused(overrides?: CallOverrides): Promise<boolean>;
+
+    "paused()"(overrides?: CallOverrides): Promise<boolean>;
 
     pickleAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -1348,6 +1352,10 @@ export class Farm extends Contract {
     uniswapRouterAddress(overrides?: CallOverrides): Promise<string>;
 
     "uniswapRouterAddress()"(overrides?: CallOverrides): Promise<string>;
+
+    unpause(overrides?: CallOverrides): Promise<boolean>;
+
+    "unpause()"(overrides?: CallOverrides): Promise<boolean>;
 
     updateFARMToken(
       _newAddress: string,
@@ -1481,6 +1489,10 @@ export class Farm extends Contract {
       previousOwner: string | null,
       newOwner: string | null
     ): EventFilter;
+
+    Paused(account: null): EventFilter;
+
+    Unpaused(account: null): EventFilter;
   };
 
   estimateGas: {
@@ -1568,12 +1580,12 @@ export class Farm extends Contract {
 
     getStakedBalance(
       _stakingTokenName: string,
-      overrides?: Overrides
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "getStakedBalance(string)"(
       _stakingTokenName: string,
-      overrides?: Overrides
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     harvest(
@@ -1590,16 +1602,6 @@ export class Farm extends Contract {
 
     "kill()"(overrides?: Overrides): Promise<BigNumber>;
 
-    nameDirectory(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "nameDirectory(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     onesplitAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     "onesplitAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1611,6 +1613,10 @@ export class Farm extends Contract {
     pause(overrides?: Overrides): Promise<BigNumber>;
 
     "pause()"(overrides?: Overrides): Promise<BigNumber>;
+
+    paused(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "paused()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     pickleAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1659,6 +1665,10 @@ export class Farm extends Contract {
     uniswapRouterAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     "uniswapRouterAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    unpause(overrides?: Overrides): Promise<BigNumber>;
+
+    "unpause()"(overrides?: Overrides): Promise<BigNumber>;
 
     updateFARMToken(
       _newAddress: string,
@@ -1868,12 +1878,12 @@ export class Farm extends Contract {
 
     getStakedBalance(
       _stakingTokenName: string,
-      overrides?: Overrides
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "getStakedBalance(string)"(
       _stakingTokenName: string,
-      overrides?: Overrides
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     harvest(
@@ -1890,16 +1900,6 @@ export class Farm extends Contract {
 
     "kill()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    nameDirectory(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "nameDirectory(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     onesplitAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "onesplitAddress()"(
@@ -1913,6 +1913,10 @@ export class Farm extends Contract {
     pause(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "pause()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "paused()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     pickleAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1971,6 +1975,10 @@ export class Farm extends Contract {
     "uniswapRouterAddress()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    unpause(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "unpause()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     updateFARMToken(
       _newAddress: string,
