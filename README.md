@@ -27,7 +27,7 @@
   - YETI consists of the Yearn ecosystem protocols with heavy weighting toward $YFI and $SUSHI.
   - Current PIPT and YETI staking yields are around 300-400%.
 - [Pickle Finance 🥒](https://pickle.finance/)
-  - Pickle was recently "hacked". The hacker used a flashloan to take advantage of a smart contract vulnerability in one of the Pickle jars (Pickle's name for vaults).
+  - Pickle was recently hacked. The hacker used a flashloan to take advantage of a smart contract vulnerability in one of the Pickle jars (Pickle's name for vaults).
   - In the aftermath of the attack, Yearn and Pickle announced that their developer teams were merging.
   - Currently, Pickle's next iteration of contracts and vault strategies are being audited and developed with the new Yearn ecosystem developer team.
   - When the new staking platform is released--which is slated for December or early January based on the Discord--the Farm contract will add Pickle staking and deploy to mainnet.
