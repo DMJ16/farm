@@ -26,7 +26,7 @@ interface WithdrawableInterface extends ethers.utils.Interface {
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "withdrawAmountToAddress(address,uint256,address)": FunctionFragment;
+    "withdrawAmountToAddress(address,address,uint256)": FunctionFragment;
     "withdrawToken(address)": FunctionFragment;
   };
 
@@ -45,7 +45,7 @@ interface WithdrawableInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawAmountToAddress",
-    values: [string, BigNumberish, string]
+    values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawToken",
@@ -135,15 +135,15 @@ export class Withdrawable extends Contract {
 
     withdrawAmountToAddress(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "withdrawAmountToAddress(address,uint256,address)"(
+    "withdrawAmountToAddress(address,address,uint256)"(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -188,15 +188,15 @@ export class Withdrawable extends Contract {
 
   withdrawAmountToAddress(
     _tokenAddress: string,
-    _amount: BigNumberish,
     _destinationAddress: string,
+    _amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "withdrawAmountToAddress(address,uint256,address)"(
+  "withdrawAmountToAddress(address,address,uint256)"(
     _tokenAddress: string,
-    _amount: BigNumberish,
     _destinationAddress: string,
+    _amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -241,15 +241,15 @@ export class Withdrawable extends Contract {
 
     withdrawAmountToAddress(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "withdrawAmountToAddress(address,uint256,address)"(
+    "withdrawAmountToAddress(address,address,uint256)"(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -308,15 +308,15 @@ export class Withdrawable extends Contract {
 
     withdrawAmountToAddress(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "withdrawAmountToAddress(address,uint256,address)"(
+    "withdrawAmountToAddress(address,address,uint256)"(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -362,15 +362,15 @@ export class Withdrawable extends Contract {
 
     withdrawAmountToAddress(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "withdrawAmountToAddress(address,uint256,address)"(
+    "withdrawAmountToAddress(address,address,uint256)"(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 

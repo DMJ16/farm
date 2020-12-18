@@ -77,12 +77,12 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
   }
 
   constructor() payable {
-    nameDirectory.add(keccak256(abi.encodePacked("harvest")));
+    nameDirectory.add(keccak256(abi.encodePacked("farm")));
     nameDirectory.add(keccak256(abi.encodePacked("pickle")));
     nameDirectory.add(keccak256(abi.encodePacked("pipt")));
     nameDirectory.add(keccak256(abi.encodePacked("yeti")));
 
-    stakingDirectory["harvest"] = StakingPlatform({
+    stakingDirectory["farm"] = StakingPlatform({
       tokenAddress: 0xa0246c9032bC3A600820415aE600c6388619A14D,
       stakingAddress: 0x25550Cccbd68533Fa04bFD3e3AC4D09f9e00Fc50
     });
@@ -107,8 +107,9 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
   }
 
   /**
-   * @dev Get the staked balance of input token name.
-   * @param _stakingTokenName Staking token name.
+   * @dev Get the staked balance of a single token.
+   * @param _stakingTokenName Get staked balance of this token.
+   * @return balance
    */
   function getStakedBalance(string memory _stakingTokenName)
     public
@@ -117,19 +118,17 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
     isValidTokenName(_stakingTokenName)
     returns (uint256 balance)
   {
-    // StakingPlatform memory stakingPlatform = stakingDirectory[_stakingTokenName];
     address self = address(this);
-    if (_stringEqCheck(_stakingTokenName, "harvest")) {
+    if (_stringEqCheck(_stakingTokenName, "farm")) {
       balance = AutoStake.balanceOf(self);
     } else if (_stringEqCheck(_stakingTokenName, "pickle")) {
-      uint256 pickleBalance = StakingRewards.balanceOf(self);
-      balance = pickleBalance;
+      balance = StakingRewards.balanceOf(self);
     } else {
       if (_stringEqCheck(_stakingTokenName, "pipt")) {
-        (, , , , uint256 lptAmount) = VestedLPMining.users(6, self);
+        (, , , , uint256 lptAmount) = VestedLPMining.users(6, self); // pid 6
         balance = lptAmount;
       } else {
-        (, , , , uint256 lptAmount) = VestedLPMining.users(9, self);
+        (, , , , uint256 lptAmount) = VestedLPMining.users(9, self); // pid 9
         balance = lptAmount;
       }
     }
@@ -137,8 +136,9 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
   }
 
   /**
-   * @dev Enter staking position given the staking token's name.
-   * @param _stakingTokenName Staking token name.
+   * @dev Enter a staking position by inputting the staking token's name as a string.
+   * @param _stakingTokenName Name of token to stake.
+   * @return amountStaked
    */
   function enterFarm(string memory _stakingTokenName)
     public
@@ -155,88 +155,85 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
     uint256 ownerBalance = token.balanceOf(msg.sender);
     address self = address(this);
     token.safeTransferFrom(msg.sender, self, ownerBalance);
-    uint256 allowance = token.allowance(self, stakingPlatform.stakingAddress);
-    if (allowance < ownerBalance) {
-      token.safeDecreaseAllowance(stakingPlatform.stakingAddress, allowance);
-      token.safeIncreaseAllowance(stakingPlatform.stakingAddress, ownerBalance);
-    }
+    _handleAllowance(token, stakingPlatform.stakingAddress, ownerBalance);
     return _stake(_stakingTokenName, ownerBalance);
   }
 
   /**
-   * @dev Exit staking position and convert staking token to USDC.
-   * @param _stakingTokenName Staking token name.
+   * @dev Exit staking position and convert reward tokens to USDC.
+   * @param _stakingTokenName Name of token to unstake.
+   * @param _returnTokenAddress Address of token to swap into from reward token.
+   * @return swapOutput
    */
-  function exitFarm(string memory _stakingTokenName)
+  function exitFarm(
+    string memory _stakingTokenName,
+    address _returnTokenAddress
+  )
     public
     payable
     onlyOwner
     nonReentrant
     whenNotPaused
     isValidTokenName(_stakingTokenName)
-    returns (bool)
+    returns (uint256 swapOutput)
   {
+    assert(_unstake(_stakingTokenName));
     StakingPlatform memory stakingPlatform =
       stakingDirectory[_stakingTokenName];
     IERC20 token = IERC20(stakingPlatform.tokenAddress);
-    assert(_unstake(_stakingTokenName));
     address self = address(this);
-    uint256 currentTokenBalance = token.balanceOf(self);
-    uint256 allowance = token.allowance(self, uniswapRouterAddress);
-    if (allowance < currentTokenBalance) {
-      token.safeDecreaseAllowance(uniswapRouterAddress, allowance);
-      token.safeIncreaseAllowance(uniswapRouterAddress, currentTokenBalance);
-    }
-    uint256 swapOutput = _performOneSplit(token, currentTokenBalance);
-    uint256 usdcBalance = USDC.balanceOf(self);
-    assert(usdcBalance == swapOutput);
-    USDC.safeTransfer(msg.sender, usdcBalance);
-    return true;
+    uint256 tokenBalance = token.balanceOf(self);
+    _handleAllowance(token, uniswapRouterAddress, tokenBalance);
+    swapOutput = _swapAndTransferToOwner(
+      token,
+      IERC20(_returnTokenAddress),
+      tokenBalance
+    );
+    return swapOutput;
   }
 
   /**
    * @dev Harvest the rewards available from staking.
-   * @param _stakingTokenName Staking token name.
+   * @param _stakingTokenName Name of token for harvesting rewards.
+   * @param _returnTokenAddress Address of token to swap into from reward token.
+   * @return swapOutput
    */
-  function harvest(string memory _stakingTokenName)
+  function harvest(string memory _stakingTokenName, address _returnTokenAddress)
     public
     onlyOwner
     nonReentrant
     whenNotPaused
     isValidTokenName(_stakingTokenName)
-    returns (uint256[] memory outputAmounts)
+    returns (uint256 swapOutput)
   {
     StakingPlatform memory stakingPlatform =
       stakingDirectory[_stakingTokenName];
     uint256 withdrawAmount;
     address self = address(this);
-    if (_stringEqCheck(_stakingTokenName, "harvest")) {
+    if (_stringEqCheck(_stakingTokenName, "farm")) {
       _unstake(_stakingTokenName); // No harvesting rewards without unstakin
     } else if (_stringEqCheck(_stakingTokenName, "pickle")) {
       withdrawAmount = StakingRewards.rewards(self);
       StakingRewards.getReward();
     } else {
       if (_stringEqCheck(_stakingTokenName, "pipt"))
-        withdrawAmount = VestedLPMining.pendingCvp(6, self);
-      else withdrawAmount = VestedLPMining.pendingCvp(9, self);
+        withdrawAmount = VestedLPMining.pendingCvp(6, self); // pid 6
+      else withdrawAmount = VestedLPMining.pendingCvp(9, self); // pid 9
     }
     IERC20 token = IERC20(stakingPlatform.tokenAddress);
-    uint256 allowance = token.allowance(self, uniswapRouterAddress);
-    if (allowance < withdrawAmount) {
-      token.safeDecreaseAllowance(uniswapRouterAddress, allowance);
-      token.safeIncreaseAllowance(uniswapRouterAddress, withdrawAmount);
-    }
-    uint256 swapOutput = _performOneSplit(token, withdrawAmount);
-    outputAmounts = new uint256[](2);
-    outputAmounts[0] = withdrawAmount;
-    outputAmounts[1] = swapOutput;
-    return outputAmounts;
+    _handleAllowance(token, uniswapRouterAddress, withdrawAmount);
+    swapOutput = _swapAndTransferToOwner(
+      token,
+      IERC20(_returnTokenAddress),
+      withdrawAmount
+    );
+    return swapOutput;
   }
 
   /**
-   * @dev Update staking token address for given staking token name.
-   * @param _stakingTokenName Staking token name.
-   * @param _newTokenAddress New token address.
+   * @dev Update staking token address.
+   * @param _stakingTokenName Name of token for token address update.
+   * @param _newTokenAddress New staking token address.
    */
   function updateStakingToken(
     string memory _stakingTokenName,
@@ -244,15 +241,16 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
   ) public onlyOwner {
     StakingPlatform memory stakingPlatform =
       stakingDirectory[_stakingTokenName];
-    stakingPlatform.tokenAddress = _newTokenAddress;
-    assert(
-      stakingDirectory[_stakingTokenName].tokenAddress == _newTokenAddress
-    );
+    stakingDirectory[_stakingTokenName] = StakingPlatform({
+      tokenAddress: _newTokenAddress,
+      stakingAddress: stakingPlatform.stakingAddress
+    });
+    assert(stakingPlatform.tokenAddress == _newTokenAddress);
   }
 
   /**
-   * @dev Update staking contract address for given staking token name.
-   * @param _stakingTokenName Staking token name.
+   * @dev Update staking contract address.
+   * @param _stakingTokenName Name of token for staking contract address update.
    * @param _newStakingAddress New staking contract address.
    */
   function updateStakingAddress(
@@ -261,97 +259,70 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
   ) public onlyOwner {
     StakingPlatform memory stakingPlatform =
       stakingDirectory[_stakingTokenName];
-    stakingPlatform.stakingAddress = _newStakingAddress;
-    assert(
-      stakingDirectory[_stakingTokenName].stakingAddress == _newStakingAddress
-    );
+    stakingDirectory[_stakingTokenName] = StakingPlatform({
+      tokenAddress: stakingPlatform.tokenAddress,
+      stakingAddress: _newStakingAddress
+    });
+    assert(stakingPlatform.stakingAddress == _newStakingAddress);
   }
 
   /**
    * @dev Update USDC token address.
-   * @param _newAddress New token address.
+   * @param _newAddress New USDC address.
    */
-  function updateUSDCToken(address _newAddress)
-    public
-    onlyOwner
-    returns (bool)
-  {
+  function updateUSDCToken(address _newAddress) public onlyOwner {
     usdcAddress = _newAddress;
     USDC = IERC20(_newAddress);
-    return true;
   }
 
   /**
    * @dev Update FARM token address.
-   * @param _newAddress New token address.
+   * @param _newAddress New FARM address.
    */
-  function updateFARMToken(address _newAddress)
-    public
-    onlyOwner
-    returns (bool)
-  {
+  function updateFARMToken(address _newAddress) public onlyOwner {
     farmTokenAddress = _newAddress;
     FARM = IERC20(_newAddress);
-    return true;
   }
 
   /**
    * @dev Update PICKLE token address.
-   * @param _newAddress New token address.
+   * @param _newAddress New PICKLE address.
    */
-  function updatePICKLEToken(address _newAddress)
-    public
-    onlyOwner
-    returns (bool)
-  {
+  function updatePICKLEToken(address _newAddress) public onlyOwner {
     pickleAddress = _newAddress;
     PICKLE = IERC20(_newAddress);
-    return true;
   }
 
   /**
    * @dev Update PIPT token address.
-   * @param _newAddress New token address.
+   * @param _newAddress New PIPT address.
    */
-  function updatePIPT(address _newAddress) public onlyOwner returns (bool) {
+  function updatePIPT(address _newAddress) public onlyOwner {
     piptAddress = _newAddress;
     PIPT = IERC20(_newAddress);
-    return true;
   }
 
   /**
    * @dev Update YETI token address.
-   * @param _newAddress New token address.
+   * @param _newAddress New YETI address.
    */
-  function updateYETI(address _newAddress) public onlyOwner returns (bool) {
+  function updateYETI(address _newAddress) public onlyOwner {
     yetiAddress = _newAddress;
     YETI = IERC20(_newAddress);
-    return true;
   }
 
   /**
    * @dev Update Uniswap router contract address.
-   * @param _newAddress New router contract address.
+   * @param _newAddress New Uniswap router contract address.
    */
-  function updateUniswapRouter(address _newAddress)
-    public
-    onlyOwner
-    returns (bool)
-  {
+  function updateUniswapRouter(address _newAddress) public onlyOwner {
     uniswapRouterAddress = _newAddress;
     UniswapRouter = IUniswapV2Router02(_newAddress);
-    return true;
-  }
-
-  /**
-   * @dev Self-destructs contract and sends funds to msg.sender, which must be the Owner. Only Owner can call kill()
-   */
-  function kill() public onlyOwner {
-    selfdestruct(msg.sender);
   }
 
   /**
    * @dev Pause contract in case of emergency. Only Owner can call pause().
+   * @return bool
    */
   function pause() public onlyOwner returns (bool) {
     _pause();
@@ -360,6 +331,7 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
 
   /**
    * @dev Unpause contract. Only Owner can call unpause().
+   * @return bool
    */
   function unpause() public onlyOwner returns (bool) {
     _unpause();
@@ -367,47 +339,66 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
   }
 
   /**
-   * @dev Stake the amount given of staking token's pool.
-   * @param _stakingTokenName Staking token's name
-   * @param _amount Amount to be staked of staking token
+   * @dev Self-destructs contract and sends funds to msg.sender. Only Owner can call kill().
    */
-  function _stake(string memory _stakingTokenName, uint256 _amount)
-    internal
-    returns (uint256 amountStaked)
-  {
-    // StakingPlatform memory stakingPlatform = stakingDirectory[_stakingTokenName];
-    address self = address(this);
-    if (_stringEqCheck(_stakingTokenName, "harvest")) {
-      AutoStake.stake(_amount);
-      amountStaked = AutoStake.balanceOf(self);
-    } else if (_stringEqCheck(_stakingTokenName, "pickle")) {
-      StakingRewards.stake(_amount);
-      uint256 pickleBalance = StakingRewards.balanceOf(self);
-      amountStaked = pickleBalance;
-    } else {
-      if (_stringEqCheck(_stakingTokenName, "pipt")) {
-        VestedLPMining.deposit(6, _amount);
-        (, , , , uint256 lptAmount) = VestedLPMining.users(6, self);
-        amountStaked = lptAmount;
-      } else {
-        VestedLPMining.deposit(9, _amount);
-        (, , , , uint256 lptAmount) = VestedLPMining.users(9, self);
-        amountStaked = lptAmount;
-      }
+  function kill() public onlyOwner {
+    address[] memory tokenAddresses = new address[](nameDirectory.length());
+    for (uint256 i = 0; i < nameDirectory.length(); i++) {
+      StakingPlatform memory stakingPlatform =
+        stakingDirectory[_bytes32ToStr(nameDirectory.at(i))];
+      tokenAddresses[i] = stakingPlatform.tokenAddress;
     }
-    assert(_amount == amountStaked);
-    return amountStaked;
+    batchWithdrawToken(tokenAddresses);
+    selfdestruct(msg.sender);
   }
 
   /**
-   * @dev Unstake total amount of staked tokens.
-   * @param _stakingTokenName Staking token's name
+   * @dev Stakes the given amount of token.
+   * @param _stakingTokenName Name of token to stake.
+   * @param _amount Amount to stake.
+   * @return TotalAmountStaked
+   */
+  function _stake(string memory _stakingTokenName, uint256 _amount)
+    internal
+    returns (uint256 TotalAmountStaked)
+  {
+    address self = address(this);
+    uint256 prevBalance;
+    if (_stringEqCheck(_stakingTokenName, "farm")) {
+      prevBalance = AutoStake.balanceOf(self);
+      AutoStake.stake(_amount);
+      TotalAmountStaked = AutoStake.balanceOf(self);
+    } else if (_stringEqCheck(_stakingTokenName, "pickle")) {
+      prevBalance = StakingRewards.balanceOf(self);
+      StakingRewards.stake(_amount);
+      TotalAmountStaked = StakingRewards.balanceOf(self);
+    } else {
+      if (_stringEqCheck(_stakingTokenName, "pipt")) {
+        (, , , , uint256 prevLptAmount) = VestedLPMining.users(6, self); // pid 6
+        prevBalance = prevLptAmount;
+        VestedLPMining.deposit(6, _amount);
+        (, , , , uint256 lptAmount) = VestedLPMining.users(6, self);
+        TotalAmountStaked = lptAmount;
+      } else {
+        (, , , , uint256 prevLptAmount) = VestedLPMining.users(9, self); // pid 9
+        prevBalance = prevLptAmount;
+        VestedLPMining.deposit(9, _amount);
+        (, , , , uint256 lptAmount) = VestedLPMining.users(9, self);
+        TotalAmountStaked = lptAmount;
+      }
+    }
+    assert(TotalAmountStaked == prevBalance.add(_amount));
+    return TotalAmountStaked;
+  }
+
+  /**
+   * @dev Unstake total amount of input token.
+   * @param _stakingTokenName Name of token to unstake.
+   * @return bool
    */
   function _unstake(string memory _stakingTokenName) internal returns (bool) {
-    StakingPlatform memory stakingPlatform =
-      stakingDirectory[_stakingTokenName];
     address self = address(this);
-    if (_stringEqCheck(_stakingTokenName, "harvest")) {
+    if (_stringEqCheck(_stakingTokenName, "farm")) {
       AutoStake.exit();
       assert(AutoStake.balanceOf(self) == 0);
     } else if (_stringEqCheck(_stakingTokenName, "pickle")) {
@@ -416,13 +407,13 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
       assert(StakingRewards.balanceOf(self) == 0);
     } else {
       if (_stringEqCheck(_stakingTokenName, "pipt")) {
-        (, , , , uint256 lptAmount) = VestedLPMining.users(6, self);
-        VestedLPMining.withdraw(6, lptAmount);
+        (, , , , uint256 prevLptAmount) = VestedLPMining.users(6, self); // pid 6
+        VestedLPMining.withdraw(6, prevLptAmount);
         (, , , , uint256 postWithdrawLptAmount) = VestedLPMining.users(6, self);
         assert(postWithdrawLptAmount == 0);
       } else {
-        (, , , , uint256 lptAmount) = VestedLPMining.users(9, self);
-        VestedLPMining.withdraw(9, lptAmount);
+        (, , , , uint256 prevLptAmount) = VestedLPMining.users(9, self); // pid 9
+        VestedLPMining.withdraw(9, prevLptAmount);
         (, , , , uint256 postWithdrawLptAmount) = VestedLPMining.users(9, self);
         assert(postWithdrawLptAmount == 0);
       }
@@ -431,19 +422,42 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
   }
 
   /**
-   * @dev Swap token into USDC using 1Inch.
-   * @param _token ERC20 token to swap into USDC
-   * @param _amount Amount of ERC20 token to convert into USDC
+   * @dev Handler swaps tokens and then sends output amount to Owner/msg.sender.
+   * @param _srcToken Source token to swap into destination token.
+   * @param _destToken Destination/output token.
+   * @param _amount Token amount to swap.
+   * @return swapOutput
    */
-  function _performOneSplit(IERC20 _token, uint256 _amount)
-    internal
-    returns (uint256 swapOutput)
-  {
+  function _swapAndTransferToOwner(
+    IERC20 _srcToken,
+    IERC20 _destToken,
+    uint256 _amount
+  ) internal returns (uint256 swapOutput) {
+    swapOutput = _performOneSplit(_srcToken, _destToken, _amount);
+    address self = address(this);
+    uint256 _destTokenBalance = _destToken.balanceOf(self);
+    assert(_destTokenBalance >= swapOutput);
+    _destToken.safeTransfer(msg.sender, _destTokenBalance);
+    return swapOutput;
+  }
+
+  /**
+   * @dev Swap token into another token using 1Inch.
+   * @param _srcToken Source token to swap into destination token.
+   * @param _destToken Destination/output token.
+   * @param _amount Token amount to swap.
+   * @return swapOutput
+   */
+  function _performOneSplit(
+    IERC20 _srcToken,
+    IERC20 _destToken,
+    uint256 _amount
+  ) internal returns (uint256 swapOutput) {
     (uint256 returnAmount, uint256[] memory distribution) =
-      OneSplit.getExpectedReturn(_token, USDC, _amount, 100, 0);
+      OneSplit.getExpectedReturn(_srcToken, _destToken, _amount, 10, 0);
     swapOutput = OneSplit.swap(
-      _token,
-      USDC,
+      _srcToken,
+      _destToken,
       _amount,
       returnAmount,
       distribution,
@@ -453,9 +467,30 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
   }
 
   /**
+   * @dev Handler safely corrects allowance if allowance is insufficient.
+   * @param _token Evaluates allowance of this token.
+   * @param _spender Address gaining allowance.
+   * @param _amount Required allowance amount.
+   */
+  function _handleAllowance(
+    IERC20 _token,
+    address _spender,
+    uint256 _amount
+  ) internal {
+    address self = address(this);
+    uint256 allowance = _token.allowance(self, _spender);
+    if (allowance < _amount) {
+      _token.safeDecreaseAllowance(_spender, allowance);
+      _token.safeIncreaseAllowance(_spender, _amount);
+    }
+    assert(_token.allowance(self, _spender) >= _amount);
+  }
+
+  /**
    * @dev Helper to check if two strings are equal.
    * @param str1 First string to compare
    * @param str2 Second string to compare
+   * @return bool
    */
   function _stringEqCheck(string memory str1, string memory str2)
     internal
@@ -465,5 +500,20 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
     return
       (keccak256(abi.encodePacked(str1))) ==
       (keccak256(abi.encodePacked(str2)));
+  }
+
+  /**
+   * @dev Helper to convert bytes32 to string.
+   * @param _bytesToConvert bytes32 to convert to string.
+   * @return string
+   */
+  function _bytes32ToStr(bytes32 _bytesToConvert)
+    internal
+    pure
+    returns (string memory)
+  {
+    bytes memory bytesArray = new bytes(32);
+    for (uint256 i = 0; i < 32; i++) bytesArray[i] = _bytesToConvert[i];
+    return string(bytesArray);
   }
 }

@@ -21,7 +21,7 @@ contract Withdrawable is Ownable, ReentrancyGuard {
 
   /**
    * @dev Withdraw single token.
-   * @param _tokenAddress Address of token to be withdrawn.
+   * @param _tokenAddress Address of token to withdraw.
    */
   function withdrawToken(address _tokenAddress) public onlyOwner nonReentrant {
     uint256 tokenBalance;
@@ -38,15 +38,15 @@ contract Withdrawable is Ownable, ReentrancyGuard {
   }
 
   /**
-   * @dev Withdraw single token to destination address given an amount to withdraw.
-   * @param _tokenAddress Address of token to be withdrawn.
-   * @param _amount Amount to withdraw of token.
-   * @param _destinationAddress Address of destination account receiving withdrawn tokens
+   * @dev Withdraw single token to destination address given a withdrawal amount.
+   * @param _tokenAddress Address of token to withdraw.
+   * @param _destinationAddress Destination address receiving withdrawn tokens.
+   * @param _amount Amount to withdraw.
    */
   function withdrawAmountToAddress(
     address _tokenAddress,
-    uint256 _amount,
-    address payable _destinationAddress
+    address payable _destinationAddress,
+    uint256 _amount
   ) public onlyOwner nonReentrant {
     IERC20 token = IERC20(_tokenAddress);
     address self = address(this);
@@ -60,8 +60,8 @@ contract Withdrawable is Ownable, ReentrancyGuard {
   }
 
   /**
-   * @dev Withdraw multiple token.
-   * @param _tokenAddresses Tokens to be withdrawn.
+   * @dev Withdraw multiple tokens.
+   * @param _tokenAddresses Addresses of tokens to withdraw.
    */
   function batchWithdrawToken(address[] memory _tokenAddresses)
     public

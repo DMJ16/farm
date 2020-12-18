@@ -37,10 +37,10 @@ interface FarmInterface extends ethers.utils.Interface {
     "autoStakeAddress()": FunctionFragment;
     "batchWithdrawToken(address[])": FunctionFragment;
     "enterFarm(string)": FunctionFragment;
-    "exitFarm(string)": FunctionFragment;
+    "exitFarm(string,address)": FunctionFragment;
     "farmTokenAddress()": FunctionFragment;
     "getStakedBalance(string)": FunctionFragment;
-    "harvest(string)": FunctionFragment;
+    "harvest(string,address)": FunctionFragment;
     "kill()": FunctionFragment;
     "onesplitAddress()": FunctionFragment;
     "owner()": FunctionFragment;
@@ -66,7 +66,7 @@ interface FarmInterface extends ethers.utils.Interface {
     "updateYETI(address)": FunctionFragment;
     "usdcAddress()": FunctionFragment;
     "wethAddress()": FunctionFragment;
-    "withdrawAmountToAddress(address,uint256,address)": FunctionFragment;
+    "withdrawAmountToAddress(address,address,uint256)": FunctionFragment;
     "withdrawToken(address)": FunctionFragment;
     "yetiAddress()": FunctionFragment;
   };
@@ -103,7 +103,10 @@ interface FarmInterface extends ethers.utils.Interface {
     values: [string[]]
   ): string;
   encodeFunctionData(functionFragment: "enterFarm", values: [string]): string;
-  encodeFunctionData(functionFragment: "exitFarm", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "exitFarm",
+    values: [string, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "farmTokenAddress",
     values?: undefined
@@ -112,7 +115,10 @@ interface FarmInterface extends ethers.utils.Interface {
     functionFragment: "getStakedBalance",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "harvest", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "harvest",
+    values: [string, string]
+  ): string;
   encodeFunctionData(functionFragment: "kill", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "onesplitAddress",
@@ -191,7 +197,7 @@ interface FarmInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawAmountToAddress",
-    values: [string, BigNumberish, string]
+    values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "withdrawToken",
@@ -523,11 +529,13 @@ export class Farm extends Contract {
 
     exitFarm(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    "exitFarm(string)"(
+    "exitFarm(string,address)"(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
@@ -561,11 +569,13 @@ export class Farm extends Contract {
 
     harvest(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "harvest(string)"(
+    "harvest(string,address)"(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -833,15 +843,15 @@ export class Farm extends Contract {
 
     withdrawAmountToAddress(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "withdrawAmountToAddress(address,uint256,address)"(
+    "withdrawAmountToAddress(address,address,uint256)"(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -938,11 +948,13 @@ export class Farm extends Contract {
 
   exitFarm(
     _stakingTokenName: string,
+    _returnTokenAddress: string,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  "exitFarm(string)"(
+  "exitFarm(string,address)"(
     _stakingTokenName: string,
+    _returnTokenAddress: string,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
@@ -962,11 +974,13 @@ export class Farm extends Contract {
 
   harvest(
     _stakingTokenName: string,
+    _returnTokenAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "harvest(string)"(
+  "harvest(string,address)"(
     _stakingTokenName: string,
+    _returnTokenAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1146,15 +1160,15 @@ export class Farm extends Contract {
 
   withdrawAmountToAddress(
     _tokenAddress: string,
-    _amount: BigNumberish,
     _destinationAddress: string,
+    _amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "withdrawAmountToAddress(address,uint256,address)"(
+  "withdrawAmountToAddress(address,address,uint256)"(
     _tokenAddress: string,
-    _amount: BigNumberish,
     _destinationAddress: string,
+    _amount: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -1243,13 +1257,15 @@ export class Farm extends Contract {
 
     exitFarm(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<BigNumber>;
 
-    "exitFarm(string)"(
+    "exitFarm(string,address)"(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<BigNumber>;
 
     farmTokenAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -1267,13 +1283,15 @@ export class Farm extends Contract {
 
     harvest(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
+    ): Promise<BigNumber>;
 
-    "harvest(string)"(
+    "harvest(string,address)"(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
+    ): Promise<BigNumber>;
 
     kill(overrides?: CallOverrides): Promise<void>;
 
@@ -1360,32 +1378,29 @@ export class Farm extends Contract {
     updateFARMToken(
       _newAddress: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<void>;
 
     "updateFARMToken(address)"(
       _newAddress: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<void>;
 
     updatePICKLEToken(
       _newAddress: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<void>;
 
     "updatePICKLEToken(address)"(
       _newAddress: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<void>;
 
-    updatePIPT(
-      _newAddress: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    updatePIPT(_newAddress: string, overrides?: CallOverrides): Promise<void>;
 
     "updatePIPT(address)"(
       _newAddress: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<void>;
 
     updateStakingAddress(
       _stakingTokenName: string,
@@ -1414,32 +1429,29 @@ export class Farm extends Contract {
     updateUSDCToken(
       _newAddress: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<void>;
 
     "updateUSDCToken(address)"(
       _newAddress: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<void>;
 
     updateUniswapRouter(
       _newAddress: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<void>;
 
     "updateUniswapRouter(address)"(
       _newAddress: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<void>;
 
-    updateYETI(
-      _newAddress: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    updateYETI(_newAddress: string, overrides?: CallOverrides): Promise<void>;
 
     "updateYETI(address)"(
       _newAddress: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<void>;
 
     usdcAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -1451,15 +1463,15 @@ export class Farm extends Contract {
 
     withdrawAmountToAddress(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "withdrawAmountToAddress(address,uint256,address)"(
+    "withdrawAmountToAddress(address,address,uint256)"(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1566,11 +1578,13 @@ export class Farm extends Contract {
 
     exitFarm(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    "exitFarm(string)"(
+    "exitFarm(string,address)"(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
@@ -1590,11 +1604,13 @@ export class Farm extends Contract {
 
     harvest(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "harvest(string)"(
+    "harvest(string,address)"(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1758,15 +1774,15 @@ export class Farm extends Contract {
 
     withdrawAmountToAddress(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "withdrawAmountToAddress(address,uint256,address)"(
+    "withdrawAmountToAddress(address,address,uint256)"(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1862,11 +1878,13 @@ export class Farm extends Contract {
 
     exitFarm(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    "exitFarm(string)"(
+    "exitFarm(string,address)"(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1888,11 +1906,13 @@ export class Farm extends Contract {
 
     harvest(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "harvest(string)"(
+    "harvest(string,address)"(
       _stakingTokenName: string,
+      _returnTokenAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -2074,15 +2094,15 @@ export class Farm extends Contract {
 
     withdrawAmountToAddress(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "withdrawAmountToAddress(address,uint256,address)"(
+    "withdrawAmountToAddress(address,address,uint256)"(
       _tokenAddress: string,
-      _amount: BigNumberish,
       _destinationAddress: string,
+      _amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
