@@ -36,7 +36,7 @@ interface FarmInterface extends ethers.utils.Interface {
     "YETI()": FunctionFragment;
     "autoStakeAddress()": FunctionFragment;
     "batchWithdrawToken(address[])": FunctionFragment;
-    "enterFarm(string)": FunctionFragment;
+    "enterFarm(string,bool)": FunctionFragment;
     "exitFarm(string,address)": FunctionFragment;
     "farmTokenAddress()": FunctionFragment;
     "getStakedBalance(string)": FunctionFragment;
@@ -102,7 +102,10 @@ interface FarmInterface extends ethers.utils.Interface {
     functionFragment: "batchWithdrawToken",
     values: [string[]]
   ): string;
-  encodeFunctionData(functionFragment: "enterFarm", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "enterFarm",
+    values: [string, boolean]
+  ): string;
   encodeFunctionData(
     functionFragment: "exitFarm",
     values: [string, string]
@@ -519,11 +522,13 @@ export class Farm extends Contract {
 
     enterFarm(
       _stakingTokenName: string,
+      _useFundsInContract: boolean,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    "enterFarm(string)"(
+    "enterFarm(string,bool)"(
       _stakingTokenName: string,
+      _useFundsInContract: boolean,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
@@ -938,11 +943,13 @@ export class Farm extends Contract {
 
   enterFarm(
     _stakingTokenName: string,
+    _useFundsInContract: boolean,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  "enterFarm(string)"(
+  "enterFarm(string,bool)"(
     _stakingTokenName: string,
+    _useFundsInContract: boolean,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
@@ -1247,11 +1254,13 @@ export class Farm extends Contract {
 
     enterFarm(
       _stakingTokenName: string,
+      _useFundsInContract: boolean,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "enterFarm(string)"(
+    "enterFarm(string,bool)"(
       _stakingTokenName: string,
+      _useFundsInContract: boolean,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1568,11 +1577,13 @@ export class Farm extends Contract {
 
     enterFarm(
       _stakingTokenName: string,
+      _useFundsInContract: boolean,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    "enterFarm(string)"(
+    "enterFarm(string,bool)"(
       _stakingTokenName: string,
+      _useFundsInContract: boolean,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
@@ -1868,11 +1879,13 @@ export class Farm extends Contract {
 
     enterFarm(
       _stakingTokenName: string,
+      _useFundsInContract: boolean,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    "enterFarm(string)"(
+    "enterFarm(string,bool)"(
       _stakingTokenName: string,
+      _useFundsInContract: boolean,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 

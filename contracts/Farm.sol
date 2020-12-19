@@ -140,7 +140,7 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
    * @param _stakingTokenName Name of token to stake.
    * @return amountStaked
    */
-  function enterFarm(string memory _stakingTokenName)
+  function enterFarm(string memory _stakingTokenName, bool _useFundsInContract)
     public
     payable
     onlyOwner
@@ -151,12 +151,18 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
   {
     StakingPlatform memory stakingPlatform =
       stakingDirectory[_stakingTokenName];
-    IERC20 token = IERC20(stakingPlatform.tokenAddress);
-    uint256 ownerBalance = token.balanceOf(msg.sender);
     address self = address(this);
-    token.safeTransferFrom(msg.sender, self, ownerBalance);
-    _handleAllowance(token, stakingPlatform.stakingAddress, ownerBalance);
-    return _stake(_stakingTokenName, ownerBalance);
+    IERC20 token = IERC20(stakingPlatform.tokenAddress);
+    if (_useFundsInContract) {
+      uint256 contractBalance = token.balanceOf(self);
+      _handleAllowance(token, stakingPlatform.stakingAddress, contractBalance);
+      return _stake(_stakingTokenName, contractBalance);
+    } else {
+      uint256 ownerBalance = token.balanceOf(msg.sender);
+      token.safeTransferFrom(msg.sender, self, ownerBalance);
+      _handleAllowance(token, stakingPlatform.stakingAddress, ownerBalance);
+      return _stake(_stakingTokenName, ownerBalance);
+    }
   }
 
   /**
@@ -184,11 +190,7 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
     address self = address(this);
     uint256 tokenBalance = token.balanceOf(self);
     _handleAllowance(token, uniswapRouterAddress, tokenBalance);
-    swapOutput = _swapAndTransferToOwner(
-      token,
-      IERC20(_returnTokenAddress),
-      tokenBalance
-    );
+    swapOutput = _swap(token, IERC20(_returnTokenAddress), tokenBalance);
     return swapOutput;
   }
 
@@ -222,11 +224,7 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
     }
     IERC20 token = IERC20(stakingPlatform.tokenAddress);
     _handleAllowance(token, uniswapRouterAddress, withdrawAmount);
-    swapOutput = _swapAndTransferToOwner(
-      token,
-      IERC20(_returnTokenAddress),
-      withdrawAmount
-    );
+    swapOutput = _swap(token, IERC20(_returnTokenAddress), withdrawAmount);
     return swapOutput;
   }
 
@@ -422,22 +420,20 @@ contract Farm is ReentrancyGuard, Pausable, Withdrawable {
   }
 
   /**
-   * @dev Handler swaps tokens and then sends output amount to Owner/msg.sender.
+   * @dev Handler swaps tokens and performs check on post swap balances.
    * @param _srcToken Source token to swap into destination token.
    * @param _destToken Destination/output token.
    * @param _amount Token amount to swap.
    * @return swapOutput
    */
-  function _swapAndTransferToOwner(
+  function _swap(
     IERC20 _srcToken,
     IERC20 _destToken,
     uint256 _amount
   ) internal returns (uint256 swapOutput) {
     swapOutput = _performOneSplit(_srcToken, _destToken, _amount);
     address self = address(this);
-    uint256 _destTokenBalance = _destToken.balanceOf(self);
-    assert(_destTokenBalance >= swapOutput);
-    _destToken.safeTransfer(msg.sender, _destTokenBalance);
+    assert(_destToken.balanceOf(self) >= swapOutput);
     return swapOutput;
   }
 
