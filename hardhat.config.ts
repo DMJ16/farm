@@ -10,21 +10,21 @@ const config: HardhatUserConfig = {
     hardhat: {
       forking: {
         url: process.env.ALCHEMY_RPC as string,
-        blockNumber: 11463565,
+        blockNumber: 11486811,
       },
     },
-    // ropsten: {
-    //   url: `https://ropsten.infura.io/v3/${process.env.RPC_API_KEY as string}`,
-    //   accounts: [process.env.PRIVATE_KEY as string],
-    // },
-    // rinkeby: {
-    //   url: `https://rinkeby.infura.io/v3/${process.env.RPC_API_KEY as string}`,
-    //   accounts: [process.env.PRIVATE_KEY as string],
-    // },
-    // kovan: {
-    //   url: `https://kovan.infura.io/v3/${process.env.RPC_API_KEY as string}`,
-    //   accounts: [process.env.PRIVATE_KEY as string],
-    // },
+    ropsten: {
+      url: `https://ropsten.infura.io/v3/${process.env.RPC_API_KEY as string}`,
+      accounts: [process.env.DEV_PRIVATE_KEY as string],
+    },
+    rinkeby: {
+      url: `https://rinkeby.infura.io/v3/${process.env.RPC_API_KEY as string}`,
+      accounts: [process.env.DEV_PRIVATE_KEY as string],
+    },
+    kovan: {
+      url: `https://kovan.infura.io/v3/${process.env.RPC_API_KEY as string}`,
+      accounts: [process.env.DEV_PRIVATE_KEY as string],
+    },
   },
   solidity: {
     compilers: [

@@ -29,7 +29,6 @@ interface FarmInterface extends ethers.utils.Interface {
     "PICKLE()": FunctionFragment;
     "PIPT()": FunctionFragment;
     "StakingRewards()": FunctionFragment;
-    "USDC()": FunctionFragment;
     "UniFactory()": FunctionFragment;
     "UniswapRouter()": FunctionFragment;
     "VestedLPMining()": FunctionFragment;
@@ -51,20 +50,19 @@ interface FarmInterface extends ethers.utils.Interface {
     "renounceOwnership()": FunctionFragment;
     "stakingDirectory(string)": FunctionFragment;
     "stakingRewardsAddress()": FunctionFragment;
-    "stopped()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "uniFactoryAddress()": FunctionFragment;
     "uniswapRouterAddress()": FunctionFragment;
     "unpause()": FunctionFragment;
     "updateFARMToken(address)": FunctionFragment;
+    "updateOneSplit(address)": FunctionFragment;
     "updatePICKLEToken(address)": FunctionFragment;
     "updatePIPT(address)": FunctionFragment;
     "updateStakingAddress(string,address)": FunctionFragment;
     "updateStakingToken(string,address)": FunctionFragment;
-    "updateUSDCToken(address)": FunctionFragment;
     "updateUniswapRouter(address)": FunctionFragment;
     "updateYETI(address)": FunctionFragment;
-    "usdcAddress()": FunctionFragment;
+    "vestedLPMiningAddress()": FunctionFragment;
     "wethAddress()": FunctionFragment;
     "withdrawAmountToAddress(address,address,uint256)": FunctionFragment;
     "withdrawToken(address)": FunctionFragment;
@@ -80,7 +78,6 @@ interface FarmInterface extends ethers.utils.Interface {
     functionFragment: "StakingRewards",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "USDC", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "UniFactory",
     values?: undefined
@@ -150,7 +147,6 @@ interface FarmInterface extends ethers.utils.Interface {
     functionFragment: "stakingRewardsAddress",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "stopped", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [string]
@@ -169,6 +165,10 @@ interface FarmInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "updateOneSplit",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "updatePICKLEToken",
     values: [string]
   ): string;
@@ -182,16 +182,12 @@ interface FarmInterface extends ethers.utils.Interface {
     values: [string, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "updateUSDCToken",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "updateUniswapRouter",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "updateYETI", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "usdcAddress",
+    functionFragment: "vestedLPMiningAddress",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -220,7 +216,6 @@ interface FarmInterface extends ethers.utils.Interface {
     functionFragment: "StakingRewards",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "USDC", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "UniFactory", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "UniswapRouter",
@@ -278,7 +273,6 @@ interface FarmInterface extends ethers.utils.Interface {
     functionFragment: "stakingRewardsAddress",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "stopped", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -297,6 +291,10 @@ interface FarmInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "updateOneSplit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "updatePICKLEToken",
     data: BytesLike
   ): Result;
@@ -310,16 +308,12 @@ interface FarmInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "updateUSDCToken",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "updateUniswapRouter",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "updateYETI", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "usdcAddress",
+    functionFragment: "vestedLPMiningAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -433,18 +427,6 @@ export class Farm extends Contract {
     }>;
 
     "StakingRewards()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    USDC(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "USDC()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -688,18 +670,6 @@ export class Farm extends Contract {
       0: string;
     }>;
 
-    stopped(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
-    "stopped()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
     transferOwnership(
       newOwner: string,
       overrides?: Overrides
@@ -748,6 +718,16 @@ export class Farm extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    updateOneSplit(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "updateOneSplit(address)"(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     updatePICKLEToken(
       _newAddress: string,
       overrides?: Overrides
@@ -792,16 +772,6 @@ export class Farm extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    updateUSDCToken(
-      _newAddress: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "updateUSDCToken(address)"(
-      _newAddress: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
     updateUniswapRouter(
       _newAddress: string,
       overrides?: Overrides
@@ -822,13 +792,13 @@ export class Farm extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    usdcAddress(
+    vestedLPMiningAddress(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
     }>;
 
-    "usdcAddress()"(
+    "vestedLPMiningAddress()"(
       overrides?: CallOverrides
     ): Promise<{
       0: string;
@@ -906,10 +876,6 @@ export class Farm extends Contract {
   StakingRewards(overrides?: CallOverrides): Promise<string>;
 
   "StakingRewards()"(overrides?: CallOverrides): Promise<string>;
-
-  USDC(overrides?: CallOverrides): Promise<string>;
-
-  "USDC()"(overrides?: CallOverrides): Promise<string>;
 
   UniFactory(overrides?: CallOverrides): Promise<string>;
 
@@ -1047,10 +1013,6 @@ export class Farm extends Contract {
 
   "stakingRewardsAddress()"(overrides?: CallOverrides): Promise<string>;
 
-  stopped(overrides?: CallOverrides): Promise<boolean>;
-
-  "stopped()"(overrides?: CallOverrides): Promise<boolean>;
-
   transferOwnership(
     newOwner: string,
     overrides?: Overrides
@@ -1079,6 +1041,16 @@ export class Farm extends Contract {
   ): Promise<ContractTransaction>;
 
   "updateFARMToken(address)"(
+    _newAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  updateOneSplit(
+    _newAddress: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "updateOneSplit(address)"(
     _newAddress: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
@@ -1127,16 +1099,6 @@ export class Farm extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  updateUSDCToken(
-    _newAddress: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "updateUSDCToken(address)"(
-    _newAddress: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
   updateUniswapRouter(
     _newAddress: string,
     overrides?: Overrides
@@ -1157,9 +1119,9 @@ export class Farm extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  usdcAddress(overrides?: CallOverrides): Promise<string>;
+  vestedLPMiningAddress(overrides?: CallOverrides): Promise<string>;
 
-  "usdcAddress()"(overrides?: CallOverrides): Promise<string>;
+  "vestedLPMiningAddress()"(overrides?: CallOverrides): Promise<string>;
 
   wethAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -1217,10 +1179,6 @@ export class Farm extends Contract {
     StakingRewards(overrides?: CallOverrides): Promise<string>;
 
     "StakingRewards()"(overrides?: CallOverrides): Promise<string>;
-
-    USDC(overrides?: CallOverrides): Promise<string>;
-
-    "USDC()"(overrides?: CallOverrides): Promise<string>;
 
     UniFactory(overrides?: CallOverrides): Promise<string>;
 
@@ -1358,10 +1316,6 @@ export class Farm extends Contract {
 
     "stakingRewardsAddress()"(overrides?: CallOverrides): Promise<string>;
 
-    stopped(overrides?: CallOverrides): Promise<boolean>;
-
-    "stopped()"(overrides?: CallOverrides): Promise<boolean>;
-
     transferOwnership(
       newOwner: string,
       overrides?: CallOverrides
@@ -1390,6 +1344,16 @@ export class Farm extends Contract {
     ): Promise<void>;
 
     "updateFARMToken(address)"(
+      _newAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateOneSplit(
+      _newAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "updateOneSplit(address)"(
       _newAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1435,16 +1399,6 @@ export class Farm extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    updateUSDCToken(
-      _newAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "updateUSDCToken(address)"(
-      _newAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     updateUniswapRouter(
       _newAddress: string,
       overrides?: CallOverrides
@@ -1462,9 +1416,9 @@ export class Farm extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    usdcAddress(overrides?: CallOverrides): Promise<string>;
+    vestedLPMiningAddress(overrides?: CallOverrides): Promise<string>;
 
-    "usdcAddress()"(overrides?: CallOverrides): Promise<string>;
+    "vestedLPMiningAddress()"(overrides?: CallOverrides): Promise<string>;
 
     wethAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -1540,10 +1494,6 @@ export class Farm extends Contract {
     StakingRewards(overrides?: CallOverrides): Promise<BigNumber>;
 
     "StakingRewards()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    USDC(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "USDC()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     UniFactory(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1671,10 +1621,6 @@ export class Farm extends Contract {
 
     "stakingRewardsAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    stopped(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "stopped()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     transferOwnership(
       newOwner: string,
       overrides?: Overrides
@@ -1703,6 +1649,16 @@ export class Farm extends Contract {
     ): Promise<BigNumber>;
 
     "updateFARMToken(address)"(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    updateOneSplit(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "updateOneSplit(address)"(
       _newAddress: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
@@ -1748,16 +1704,6 @@ export class Farm extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    updateUSDCToken(
-      _newAddress: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "updateUSDCToken(address)"(
-      _newAddress: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
     updateUniswapRouter(
       _newAddress: string,
       overrides?: Overrides
@@ -1775,9 +1721,9 @@ export class Farm extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    usdcAddress(overrides?: CallOverrides): Promise<BigNumber>;
+    vestedLPMiningAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "usdcAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "vestedLPMiningAddress()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     wethAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1838,10 +1784,6 @@ export class Farm extends Contract {
     "StakingRewards()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    USDC(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "USDC()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     UniFactory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1981,10 +1923,6 @@ export class Farm extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    stopped(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "stopped()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     transferOwnership(
       newOwner: string,
       overrides?: Overrides
@@ -2019,6 +1957,16 @@ export class Farm extends Contract {
     ): Promise<PopulatedTransaction>;
 
     "updateFARMToken(address)"(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    updateOneSplit(
+      _newAddress: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "updateOneSplit(address)"(
       _newAddress: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
@@ -2067,16 +2015,6 @@ export class Farm extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    updateUSDCToken(
-      _newAddress: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "updateUSDCToken(address)"(
-      _newAddress: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
     updateUniswapRouter(
       _newAddress: string,
       overrides?: Overrides
@@ -2097,9 +2035,13 @@ export class Farm extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    usdcAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    vestedLPMiningAddress(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    "usdcAddress()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "vestedLPMiningAddress()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     wethAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

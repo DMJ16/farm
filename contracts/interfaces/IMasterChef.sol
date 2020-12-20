@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.8.0;
+pragma solidity >=0.6.0 <0.8.0;
 
 interface IMasterChef {
   function deposit(uint256 _pid, uint256 _amount) external;

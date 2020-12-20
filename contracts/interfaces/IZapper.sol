@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.8.0;
+pragma solidity >=0.6.0 <0.8.0;
 
 interface IUniswapZapIn {
   // zapIn address: 0xE83554B397BdA8ECAE7FEE5aeE532e83Ee9eB29D
